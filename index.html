@@ -61,7 +61,6 @@
             flex-direction: column;
         }
 
-        /* --- NEW: search + PDF toolbar --- */
         .sidebar-tools {
             margin-bottom: 18px;
             padding-bottom: 16px;
@@ -454,6 +453,38 @@
         .pdf-fab:active { transform: scale(0.96); }
 
         /* ============================================================
+           DIAGRAMS / FIGURES  (visual learning additions)
+           ============================================================ */
+        .figure {
+            margin: 26px 0 30px;
+            padding: 22px 18px 16px;
+            background: linear-gradient(180deg, #fbfcfe 0%, #f3f6fa 100%);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .figure svg {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            overflow: visible;
+        }
+        .figure-caption {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            margin-top: 14px;
+            font-style: italic;
+            text-align: center;
+            line-height: 1.55;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .figure-caption strong { color: var(--text-main); font-style: normal; }
+
+        /* ============================================================
            RESPONSIVE
            ============================================================ */
         @media (max-width: 900px) {
@@ -471,6 +502,7 @@
             h1 { font-size: 2rem; }
             h2 { font-size: 1.5rem; margin-top: 40px; }
             .pdf-fab { display: flex; }
+            .figure { padding: 14px 10px 10px; }
         }
 
         /* ============================================================
@@ -507,7 +539,7 @@
             h3 { font-size: 1.15rem; break-after: avoid; page-break-after: avoid; }
             h4 { font-size: 1rem;   break-after: avoid; page-break-after: avoid; }
 
-            pre, .output-block, .callout, table, tr, td, th {
+            pre, .output-block, .callout, table, tr, td, th, .figure {
                 break-inside: avoid;
                 page-break-inside: avoid;
             }
@@ -521,9 +553,14 @@
                 print-color-adjust: exact;
             }
 
-            pre code, .output-block, .callout, th, .output-title, mark.search-hit {
+            pre code, .output-block, .callout, th, .output-title, mark.search-hit, .figure {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+            }
+
+            .figure {
+                border: 1px solid #ccc;
+                box-shadow: none;
             }
 
             mark.search-hit,
@@ -554,7 +591,6 @@
          ============================================================ -->
     <nav class="sidebar" aria-label="Course navigation">
 
-        <!-- NEW: search + PDF toolbar -->
         <div class="sidebar-tools">
             <div class="search-box">
                 <svg class="search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none"
@@ -811,6 +847,61 @@ gdb --version</code></pre>
         <h3>1.4 How a C++ Program Becomes an Executable</h3>
         <p>Understanding this pipeline explains 80% of the confusing error messages you will see.</p>
 
+        <!-- ============ FIGURE: COMPILATION PIPELINE ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 900 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Compilation pipeline: preprocessor, compiler, assembler, linker">
+                <defs>
+                    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#1a73e8"/>
+                    </marker>
+                </defs>
+
+                <!-- main.cpp -->
+                <rect x="10" y="60" width="90" height="55" rx="8" fill="#f1f3f4" stroke="#5f6368" stroke-width="2"/>
+                <text x="55" y="85" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#202124">main.cpp</text>
+                <text x="55" y="103" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#5f6368">source</text>
+
+                <line x1="102" y1="87" x2="126" y2="87" stroke="#1a73e8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="114" y="50" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#5f6368">main.ii</text>
+
+                <!-- Preprocessor -->
+                <rect x="130" y="60" width="120" height="55" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="190" y="83" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#1557b0">Preprocessor</text>
+                <text x="190" y="100" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">expands #include</text>
+
+                <line x1="252" y1="87" x2="276" y2="87" stroke="#1a73e8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="264" y="50" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#5f6368">main.s</text>
+
+                <!-- Compiler -->
+                <rect x="280" y="60" width="110" height="55" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="335" y="83" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#1557b0">Compiler</text>
+                <text x="335" y="100" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">syntax → asm</text>
+
+                <line x1="392" y1="87" x2="416" y2="87" stroke="#1a73e8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+                <text x="404" y="50" text-anchor="middle" font-family="Consolas, monospace" font-size="10" fill="#5f6368">main.o</text>
+
+                <!-- Assembler -->
+                <rect x="420" y="60" width="120" height="55" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="480" y="83" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#1557b0">Assembler</text>
+                <text x="480" y="100" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">→ machine code</text>
+
+                <line x1="542" y1="87" x2="566" y2="87" stroke="#1a73e8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+                <!-- Linker -->
+                <rect x="570" y="60" width="100" height="55" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="620" y="83" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#1557b0">Linker</text>
+                <text x="620" y="100" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">+ libraries</text>
+
+                <line x1="672" y1="87" x2="696" y2="87" stroke="#1a73e8" stroke-width="2" marker-end="url(#arrowBlue)"/>
+
+                <!-- executable -->
+                <rect x="700" y="60" width="130" height="55" rx="8" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+                <text x="765" y="83" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#188038">executable</text>
+                <text x="765" y="100" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">app / app.exe</text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 1 — The four-stage build pipeline.</strong> Every compiler error belongs to exactly one stage. Preprocessor errors are missing headers; compiler errors are syntax; linker errors are missing definitions.</div>
+        </div>
+
         <pre><code>main.cpp
    │
    ▼  [1] PREPROCESSOR   — handles #include, #define, #ifdef
@@ -1023,6 +1114,44 @@ Address    Content          Variable
 0x7ffd14   [ 40 8f c2 f5 ]  float price = 1.99f;
 0x7ffd18   [ 41 ]           char grade = 'A';</code></pre>
 
+        <!-- ============ FIGURE: VARIABLES IN MEMORY ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 700 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Variables represented as named boxes in stack memory">
+                <text x="350" y="20" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#202124">Stack memory — each variable is a named box</text>
+
+                <text x="20" y="50" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368">Address</text>
+                <text x="160" y="50" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368">Bytes</text>
+                <text x="360" y="50" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368">Variable</text>
+                <text x="560" y="50" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368">Value</text>
+
+                <!-- Row 1: int age -->
+                <rect x="20" y="60" width="660" height="45" fill="#e8f0fe" stroke="#1a73e8" stroke-width="1.5" rx="4"/>
+                <text x="30" y="87" font-family="Consolas, monospace" font-size="12" fill="#202124">0x7ffd1000</text>
+                <text x="160" y="87" font-family="Consolas, monospace" font-size="12" fill="#202124">00 00 00 19</text>
+                <text x="360" y="87" font-family="Consolas, monospace" font-size="12" fill="#1557b0" font-weight="bold">int age</text>
+                <text x="560" y="87" font-family="Consolas, monospace" font-size="12" fill="#202124">25</text>
+
+                <!-- Row 2: float price -->
+                <rect x="20" y="105" width="660" height="45" fill="#fef7e0" stroke="#f29900" stroke-width="1.5" rx="4"/>
+                <text x="30" y="132" font-family="Consolas, monospace" font-size="12" fill="#202124">0x7ffd1004</text>
+                <text x="160" y="132" font-family="Consolas, monospace" font-size="12" fill="#202124">40 8f c2 f5</text>
+                <text x="360" y="132" font-family="Consolas, monospace" font-size="12" fill="#b06000" font-weight="bold">float price</text>
+                <text x="560" y="132" font-family="Consolas, monospace" font-size="12" fill="#202124">1.99</text>
+
+                <!-- Row 3: char grade -->
+                <rect x="20" y="150" width="660" height="45" fill="#e6f4ea" stroke="#188038" stroke-width="1.5" rx="4"/>
+                <text x="30" y="177" font-family="Consolas, monospace" font-size="12" fill="#202124">0x7ffd1008</text>
+                <text x="160" y="177" font-family="Consolas, monospace" font-size="12" fill="#202124">41</text>
+                <text x="360" y="177" font-family="Consolas, monospace" font-size="12" fill="#188038" font-weight="bold">char grade</text>
+                <text x="560" y="177" font-family="Consolas, monospace" font-size="12" fill="#202124">'A'</text>
+
+                <text x="350" y="218" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">
+                    The type decides byte count AND how those bytes are interpreted.
+                </text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 2 — Variables are typed slots in memory.</strong> <code>int age</code> stores <code>25</code> as raw bytes; <code>char grade</code> stores <code>'A'</code> as ASCII code 65. Same memory, different interpretations.</div>
+        </div>
+
         <h3>3.2 Fundamental Data Types</h3>
         <table>
             <tr><th>Type</th><th>Typical Size</th><th>Typical Range</th><th>Use For</th></tr>
@@ -1225,7 +1354,6 @@ B</div>
             <tr><td><code>m_</code> prefix</td><td><code>m_balance</code></td><td>Class member variables</td></tr>
         </table>
 
-        <!-- Extra beginner example -->
         <h3>3.11 Complete Beginner Example — "About Me"</h3>
         <p>This small program uses everything from Sections 2 and 3: output, variables of different types, constants, and type conversion. Read every line and then change the values.</p>
         <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
@@ -1585,7 +1713,6 @@ cout &lt;&lt; (a == b) &lt;&lt; <span class="str">"\n"</span>;              <spa
             <div class="output-title">Output</div>0
 equal enough</div>
 
-        <!-- Extra beginner example -->
         <h3>5.11 Complete Beginner Example — "Circle Geometry Calculator"</h3>
         <p>This uses <code>&lt;cmath&gt;</code>, constants, input, and floating-point formatting — the four tools that turn a calculator into a useful program. Read the comments in the code; they explain each step.</p>
         <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
@@ -1851,6 +1978,58 @@ true</div>
         <div class="output-block">
             <div class="output-title">Output</div>Grade: B</div>
 
+        <!-- ============ FIGURE: IF/ELSE FLOWCHART ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="If/else branching flowchart">
+                <defs>
+                    <marker id="arrowFlow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#5f6368"/>
+                    </marker>
+                </defs>
+
+                <!-- Start -->
+                <rect x="210" y="10" width="100" height="35" rx="18" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="260" y="33" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#1557b0">Start</text>
+
+                <line x1="260" y1="45" x2="260" y2="85" stroke="#5f6368" stroke-width="2" marker-end="url(#arrowFlow)"/>
+
+                <!-- Condition diamond -->
+                <polygon points="260,90 360,140 260,190 160,140" fill="#fef7e0" stroke="#f29900" stroke-width="2"/>
+                <text x="260" y="135" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#b06000">condition?</text>
+                <text x="260" y="152" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#b06000">(true / false)</text>
+
+                <!-- Yes branch right -->
+                <line x1="360" y1="140" x2="405" y2="140" stroke="#188038" stroke-width="2" marker-end="url(#arrowFlow)"/>
+                <text x="380" y="130" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="bold" fill="#188038">true</text>
+
+                <!-- No branch left -->
+                <line x1="160" y1="140" x2="115" y2="140" stroke="#d93025" stroke-width="2" marker-end="url(#arrowFlow)"/>
+                <text x="137" y="130" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="bold" fill="#d93025">false</text>
+
+                <!-- True block -->
+                <rect x="405" y="115" width="100" height="50" rx="8" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+                <text x="455" y="137" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#188038">Block A</text>
+                <text x="455" y="153" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">execute</text>
+
+                <!-- False block -->
+                <rect x="15" y="115" width="100" height="50" rx="8" fill="#fce8e6" stroke="#d93025" stroke-width="2"/>
+                <text x="65" y="137" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#d93025">Block B</text>
+                <text x="65" y="153" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#202124">execute</text>
+
+                <!-- Merge arrows -->
+                <path d="M 455 165 L 455 220 L 260 220" fill="none" stroke="#5f6368" stroke-width="2"/>
+                <path d="M 65 165 L 65 220 L 260 220" fill="none" stroke="#5f6368" stroke-width="2"/>
+                <line x1="260" y1="220" x2="260" y2="265" stroke="#5f6368" stroke-width="2" marker-end="url(#arrowFlow)"/>
+
+                <!-- Continue -->
+                <rect x="210" y="270" width="100" height="35" rx="18" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="260" y="293" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#1557b0">Continue</text>
+
+                <text x="260" y="335" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">Exactly one branch executes — never both.</text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 3 — Branching logic.</strong> The condition is evaluated once, and exactly one of the two blocks runs before execution continues.</div>
+        </div>
+
         <div class="callout note">
             <div class="callout-title">📘 Order matters</div>
             <p>The chain stops at the <em>first</em> true condition. Writing <code>if (score &gt;= 70)</code> before <code>if (score &gt;= 90)</code> would make "A" unreachable. Always order from most restrictive to least restrictive.</p>
@@ -2037,7 +2216,6 @@ cout &lt;&lt; <span class="str">"\n"</span>;</code></pre>
 } <span class="kw">while</span> (choice != <span class="num">0</span>);</code></pre>
         </div>
 
-        <!-- Extra beginner example -->
         <h3>8.5 Complete Beginner Example — "Calculator Walkthrough"</h3>
         <p>This program is the single best exercise for a beginner: it combines input, <code>double</code> variables, <code>switch</code>, and division-by-zero protection. Read every comment — they explain why each line exists.</p>
         <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
@@ -2107,6 +2285,54 @@ cout &lt;&lt; <span class="str">"\n"</span>;</code></pre>
 
         <div class="output-block">
             <div class="output-title">Output</div>0 1 2 3 4</div>
+
+        <!-- ============ FIGURE: WHILE LOOP FLOWCHART ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 560 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="While loop flowchart">
+                <defs>
+                    <marker id="arrowLoop" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                        <path d="M0,0 L0,6 L9,3 z" fill="#5f6368"/>
+                    </marker>
+                </defs>
+
+                <!-- Start -->
+                <rect x="230" y="10" width="100" height="35" rx="18" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="280" y="33" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#1557b0">Start</text>
+
+                <line x1="280" y1="45" x2="280" y2="80" stroke="#5f6368" stroke-width="2" marker-end="url(#arrowLoop)"/>
+
+                <!-- Condition -->
+                <polygon points="280,85 400,140 280,195 160,140" fill="#fef7e0" stroke="#f29900" stroke-width="2"/>
+                <text x="280" y="135" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#b06000">i &lt; 5 ?</text>
+                <text x="280" y="152" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="10" fill="#b06000">(checked first)</text>
+
+                <!-- Yes -->
+                <line x1="280" y1="195" x2="280" y2="230" stroke="#188038" stroke-width="2" marker-end="url(#arrowLoop)"/>
+                <text x="295" y="215" font-family="Segoe UI, sans-serif" font-size="11" font-weight="bold" fill="#188038">true</text>
+
+                <!-- Body -->
+                <rect x="190" y="235" width="180" height="55" rx="8" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+                <text x="280" y="257" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-weight="bold" fill="#188038">Body</text>
+                <text x="280" y="275" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">cout &lt;&lt; i; ++i;</text>
+
+                <!-- Loop back -->
+                <path d="M 190 262 L 100 262 L 100 140 L 160 140" fill="none" stroke="#1a73e8" stroke-width="2" marker-end="url(#arrowLoop)"/>
+                <text x="80" y="205" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#1a73e8" font-weight="bold">repeat</text>
+
+                <!-- No -->
+                <line x1="400" y1="140" x2="490" y2="140" stroke="#d93025" stroke-width="2"/>
+                <text x="445" y="130" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" font-weight="bold" fill="#d93025">false</text>
+
+                <path d="M 490 140 L 490 305 L 330 305" fill="none" stroke="#d93025" stroke-width="2" marker-end="url(#arrowLoop)"/>
+
+                <!-- Continue -->
+                <rect x="230" y="290" width="100" height="35" rx="18" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="280" y="313" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#1557b0">Continue</text>
+
+                <text x="280" y="350" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">Condition checked before each pass → 0 or more iterations.</text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 4 — The while loop.</strong> The condition is checked <em>before</em> the body. If it is false initially, the body runs zero times.</div>
+        </div>
 
         <p>If the condition is false initially, the body never runs.</p>
 
@@ -2218,7 +2444,6 @@ cout &lt;&lt; <span class="str">"\n"</span>;</code></pre>
 cout &lt;&lt; <span class="str">"1\nSteps: "</span> &lt;&lt; steps &lt;&lt; <span class="str">"\n"</span>;</code></pre>
         </div>
 
-        <!-- Extra beginner example -->
         <h3>9.8 Complete Beginner Example — "Guessing Game"</h3>
         <p>This is the friendliest way to understand a <code>while</code> loop. The loop keeps running until the user's guess matches the secret number. Each iteration, the program gives feedback (too high / too low) and counts how many tries it took.</p>
         <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
@@ -2290,6 +2515,51 @@ cout &lt;&lt; cars[<span class="num">0</span>] &lt;&lt; <span class="str">"\n"</
 <span class="com">// Element count</span>
 cout &lt;&lt; <span class="kw">sizeof</span>(cars) / <span class="kw">sizeof</span>(cars[<span class="num">0</span>]) &lt;&lt; <span class="str">"\n"</span>;  <span class="com">// 4</span>
 cout &lt;&lt; std::size(cars) &lt;&lt; <span class="str">"\n"</span>;                   <span class="com">// 4 (C++17, safer)</span></code></pre>
+
+        <!-- ============ FIGURE: ARRAY IN MEMORY ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 700 190" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Array elements laid out contiguously in memory">
+                <text x="350" y="22" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="13" font-weight="bold" fill="#202124">int arr[5] = {10, 20, 30, 40, 50};  —  one contiguous block</text>
+
+                <g font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" text-anchor="middle">
+                    <text x="60"  y="56">index 0</text>
+                    <text x="180" y="56">index 1</text>
+                    <text x="300" y="56">index 2</text>
+                    <text x="420" y="56">index 3</text>
+                    <text x="540" y="56">index 4</text>
+                </g>
+
+                <g font-family="Consolas, monospace" font-size="20" text-anchor="middle">
+                    <rect x="15" y="66" width="90" height="60" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                    <text x="60" y="104" fill="#202124" font-weight="bold">10</text>
+
+                    <rect x="135" y="66" width="90" height="60" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                    <text x="180" y="104" fill="#202124" font-weight="bold">20</text>
+
+                    <rect x="255" y="66" width="90" height="60" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                    <text x="300" y="104" fill="#202124" font-weight="bold">30</text>
+
+                    <rect x="375" y="66" width="90" height="60" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                    <text x="420" y="104" fill="#202124" font-weight="bold">40</text>
+
+                    <rect x="495" y="66" width="90" height="60" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                    <text x="540" y="104" fill="#202124" font-weight="bold">50</text>
+                </g>
+
+                <g font-family="Consolas, monospace" font-size="10" fill="#5f6368" text-anchor="middle">
+                    <text x="60"  y="148">0x1000</text>
+                    <text x="180" y="148">0x1004</text>
+                    <text x="300" y="148">0x1008</text>
+                    <text x="420" y="148">0x100c</text>
+                    <text x="540" y="148">0x1010</text>
+                </g>
+
+                <text x="350" y="178" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">
+                    Each int is 4 bytes — the next element starts right after the previous one.
+                </text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 5 — Arrays live contiguously in memory.</strong> Index 0 is the first element; each successive element is <code>sizeof(type)</code> bytes further along.</div>
+        </div>
 
         <div class="callout pitfall">
             <div class="callout-title">🧨 Out-of-bounds access is undefined behavior</div>
@@ -2665,7 +2935,6 @@ cout &lt;&lt; <span class="fn">factorial</span>(<span class="num">10</span>) &lt
             <p>Both prevent double inclusion. <code>#pragma once</code> is shorter and supported by every mainstream compiler; the classic <code>#ifndef/#define/#endif</code> guard is guaranteed by the standard. Pick one and be consistent.</p>
         </div>
 
-        <!-- Extra beginner example -->
         <h3>11.12 Complete Beginner Example — "Functions Explained Step-by-Step"</h3>
         <p>This program starts with a working calculation written inline, then <em>refactors</em> it into a function. Seeing both versions side by side is the fastest way to understand what a function actually does.</p>
         <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
@@ -2758,6 +3027,46 @@ cout &lt;&lt; x    &lt;&lt; <span class="str">"\n"</span>;  <span class="com">//
 0x7ffd3e2a1b4c
 10
 20</div>
+
+        <!-- ============ FIGURE: POINTER DIAGRAM ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 620 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pointer p stores the address of x">
+                <defs>
+                    <marker id="arrowPtr" markerWidth="12" markerHeight="12" refX="10" refY="4" orient="auto">
+                        <path d="M0,0 L0,8 L12,4 z" fill="#d93025"/>
+                    </marker>
+                </defs>
+
+                <text x="310" y="22" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#202124">int x = 10;    int* p = &amp;x;</text>
+
+                <!-- Variable x -->
+                <rect x="60" y="70" width="190" height="95" rx="8" fill="#e6f4ea" stroke="#188038" stroke-width="2"/>
+                <text x="155" y="95" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#188038">x</text>
+                <text x="155" y="118" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#5f6368">address: 0x7ffd1000</text>
+                <text x="155" y="145" text-anchor="middle" font-family="Consolas, monospace" font-size="20" font-weight="bold" fill="#202124">10</text>
+
+                <!-- Pointer p -->
+                <rect x="370" y="70" width="190" height="95" rx="8" fill="#fce8e6" stroke="#d93025" stroke-width="2"/>
+                <text x="465" y="95" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#d93025">p</text>
+                <text x="465" y="118" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#5f6368">address: 0x7ffd1008</text>
+                <text x="465" y="145" text-anchor="middle" font-family="Consolas, monospace" font-size="13" font-weight="bold" fill="#202124">0x7ffd1000</text>
+
+                <!-- Arrow from p to x -->
+                <line x1="370" y1="160" x2="258" y2="160" stroke="#d93025" stroke-width="2" marker-end="url(#arrowPtr)"/>
+                <text x="310" y="180" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#d93025" font-style="italic">p "points at" x</text>
+
+                <text x="310" y="215" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" fill="#202124">
+                    *p  reads the value at p's address → 10
+                </text>
+                <text x="310" y="238" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" fill="#202124">
+                    &amp;x  gives x's address → 0x7ffd1000
+                </text>
+                <text x="310" y="261" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">
+                    *p = 20  writes through the pointer → x becomes 20
+                </text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 6 — Pointers hold addresses.</strong> <code>p</code> stores the location of <code>x</code>. Dereferencing (<code>*p</code>) follows that address to read or write the value.</div>
+        </div>
 
         <h3>12.3 <code>nullptr</code> — The Safe Null Pointer</h3>
         <pre><code><span class="type">int</span>* p = <span class="kw">nullptr</span>;     <span class="com">// points at nothing</span>
@@ -2956,6 +3265,48 @@ Toyota says: Beep beep!
 Age: 4
 Honda says: Beep beep!</div>
 
+        <!-- ============ FIGURE: CLASS vs OBJECTS ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 700 350" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="A class blueprint creates objects">
+                <!-- Class -->
+                <rect x="230" y="20" width="240" height="110" rx="8" fill="#f3e8fd" stroke="#7b1fa2" stroke-width="2"/>
+                <text x="350" y="45" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#7b1fa2">class Car</text>
+                <line x1="230" y1="58" x2="470" y2="58" stroke="#7b1fa2" stroke-width="1"/>
+                <text x="350" y="78" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">- brand : string</text>
+                <text x="350" y="96" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">- year  : int</text>
+                <text x="350" y="114" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">+ honk()</text>
+                <text x="350" y="155" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="12" font-style="italic" fill="#5f6368">blueprint (class)</text>
+
+                <!-- Arrows -->
+                <line x1="300" y1="165" x2="170" y2="200" stroke="#5f6368" stroke-width="2"/>
+                <polygon points="170,208 162,196 182,199" fill="#5f6368"/>
+                <line x1="400" y1="165" x2="530" y2="200" stroke="#5f6368" stroke-width="2"/>
+                <polygon points="530,208 518,199 538,196" fill="#5f6368"/>
+                <text x="350" y="188" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">instantiate</text>
+
+                <!-- Object 1 -->
+                <rect x="50" y="212" width="240" height="118" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="170" y="237" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#1557b0">myCar</text>
+                <line x1="50" y1="247" x2="290" y2="247" stroke="#1a73e8" stroke-width="1"/>
+                <text x="170" y="268" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">brand = "Toyota"</text>
+                <text x="170" y="286" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">year  = 2020</text>
+                <text x="170" y="308" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#188038">honk() → beep!</text>
+
+                <!-- Object 2 -->
+                <rect x="410" y="212" width="240" height="118" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="530" y="237" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#1557b0">other</text>
+                <line x1="410" y1="247" x2="650" y2="247" stroke="#1a73e8" stroke-width="1"/>
+                <text x="530" y="268" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">brand = "Honda"</text>
+                <text x="530" y="286" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">year  = 2018</text>
+                <text x="530" y="308" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#188038">honk() → beep!</text>
+
+                <text x="350" y="345" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">
+                    One class → many independent objects, each with its own data.
+                </text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 7 — Class as a blueprint, objects as instances.</strong> Each <code>Car</code> object gets its own copy of <code>brand</code> and <code>year</code>, but all share the same method definitions.</div>
+        </div>
+
         <h3>13.3 Access Specifiers and Encapsulation</h3>
         <table>
             <tr><th>Specifier</th><th>Accessible from</th></tr>
@@ -3063,6 +3414,51 @@ Resource released</div>
     <span class="fn">Cat</span>(<span class="type">string</span> n) : <span class="fn">Animal</span>{n} { }
     <span class="type">void</span> <span class="fn">speak</span>() <span class="kw">const override</span> { cout &lt;&lt; name &lt;&lt; <span class="str">" says: Meow!\n"</span>; }
 };</code></pre>
+
+        <!-- ============ FIGURE: INHERITANCE TREE ============ -->
+        <div class="figure">
+            <svg viewBox="0 0 700 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Inheritance tree: Animal base class with Dog and Cat derived classes">
+                <!-- Animal (base) -->
+                <rect x="230" y="15" width="240" height="105" rx="8" fill="#f3e8fd" stroke="#7b1fa2" stroke-width="2"/>
+                <text x="350" y="40" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#7b1fa2">Animal</text>
+                <line x1="230" y1="52" x2="470" y2="52" stroke="#7b1fa2" stroke-width="1"/>
+                <text x="350" y="72" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124"># name : string</text>
+                <text x="350" y="90" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">+ eat()</text>
+                <text x="350" y="108" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#c678dd">+ speak() [virtual]</text>
+
+                <!-- Connector lines -->
+                <line x1="350" y1="120" x2="350" y2="140" stroke="#5f6368" stroke-width="2"/>
+                <line x1="150" y1="140" x2="550" y2="140" stroke="#5f6368" stroke-width="2"/>
+                <line x1="150" y1="140" x2="150" y2="170" stroke="#5f6368" stroke-width="2"/>
+                <line x1="550" y1="140" x2="550" y2="170" stroke="#5f6368" stroke-width="2"/>
+                <polygon points="150,180 143,167 157,167" fill="#5f6368"/>
+                <polygon points="550,180 543,167 557,167" fill="#5f6368"/>
+
+                <!-- Dog -->
+                <rect x="40" y="185" width="220" height="125" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="150" y="210" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#1557b0">Dog</text>
+                <line x1="40" y1="222" x2="260" y2="222" stroke="#1a73e8" stroke-width="1"/>
+                <text x="150" y="242" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">inherits name, eat()</text>
+                <text x="150" y="262" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#188038">speak() → "Woof!"</text>
+                <text x="150" y="282" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">+ fetch()</text>
+
+                <!-- Cat -->
+                <rect x="440" y="185" width="220" height="125" rx="8" fill="#e8f0fe" stroke="#1a73e8" stroke-width="2"/>
+                <text x="550" y="210" text-anchor="middle" font-family="Consolas, monospace" font-size="14" font-weight="bold" fill="#1557b0">Cat</text>
+                <line x1="440" y1="222" x2="660" y2="222" stroke="#1a73e8" stroke-width="1"/>
+                <text x="550" y="242" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#202124">inherits name, eat()</text>
+                <text x="550" y="262" text-anchor="middle" font-family="Consolas, monospace" font-size="11" fill="#188038">speak() → "Meow!"</text>
+
+                <!-- Polymorphism callout -->
+                <text x="350" y="345" text-anchor="middle" font-family="Consolas, monospace" font-size="12" fill="#5f6368">
+                    Animal* a = &amp;dog;   a-&gt;speak();   →   "Woof!"
+                </text>
+                <text x="350" y="365" text-anchor="middle" font-family="Segoe UI, sans-serif" font-size="11" fill="#5f6368" font-style="italic">
+                    virtual dispatch picks the correct override at runtime.
+                </text>
+            </svg>
+            <div class="figure-caption"><strong>Figure 8 — Inheritance and polymorphism.</strong> Dog and Cat inherit <code>name</code> and <code>eat()</code> from Animal, and each provides its own <code>speak()</code>. A base-class pointer calls the right version at runtime.</div>
+        </div>
 
         <h3>13.6 Polymorphism</h3>
         <p>One interface, many behaviours. Through a base-class pointer or reference, the correct derived method is called at runtime.</p>
