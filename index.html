@@ -227,6 +227,16 @@
         }
 
         /* ============================================================
+           MOBILE SIDEBAR TOGGLE + BACKDROP
+           (hidden on desktop; shown at ≤900px)
+           ============================================================ */
+        .sidebar-toggle { display: none; }
+        .sidebar-backdrop { display: none; }
+        .sidebar-toggle .icon-close { display: none; }
+        .sidebar-toggle[aria-expanded="true"] .icon-menu { display: none; }
+        .sidebar-toggle[aria-expanded="true"] .icon-close { display: block; }
+
+        /* ============================================================
            MAIN CONTENT
            ============================================================ */
         .main-content {
@@ -485,24 +495,248 @@
         .figure-caption strong { color: var(--text-main); font-style: normal; }
 
         /* ============================================================
-           RESPONSIVE
+           RESPONSIVE — TABLET / MOBILE (≤ 900px) — DRAWER MODE
            ============================================================ */
         @media (max-width: 900px) {
             .layout { flex-direction: column; }
+
+            /* --- Sidebar becomes a slide-in drawer --- */
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                max-height: 45vh;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: min(320px, 85vw);
+                height: 100vh;
+                height: 100dvh;
+                max-height: 100dvh;
+                z-index: 100;
+                border-right: 1px solid var(--border);
+                border-bottom: none;
+                box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+                transform: translateX(-100%);
+                visibility: hidden;
+                transition: transform 0.25s ease, visibility 0.25s ease;
+                padding: 20px;
+                padding-top: 64px; /* room for the toggle button */
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                background-color: var(--bg-card);
+                overscroll-behavior: contain;
             }
-            .sidebar-tools { position: sticky; top: 0; background: var(--bg-card); z-index: 2; }
-            .main-content { padding: 24px 20px 90px 20px; }
+            .sidebar.open {
+                transform: translateX(0);
+                visibility: visible;
+            }
+
+            /* Search tools are not sticky inside the drawer */
+            .sidebar-tools {
+                position: static;
+                background: transparent;
+                padding-bottom: 14px;
+                margin-bottom: 14px;
+            }
+
+            /* --- Toggle button (hamburger ↔ close) --- */
+            .sidebar-toggle {
+                display: flex;
+                position: fixed;
+                top: 12px;
+                left: 12px;
+                z-index: 110;
+                width: 44px;
+                height: 44px;
+                align-items: center;
+                justify-content: center;
+                border: none;
+                border-radius: 10px;
+                background: var(--primary);
+                color: #fff;
+                cursor: pointer;
+                box-shadow: 0 4px 12px rgba(26, 115, 232, 0.35);
+                transition: transform 0.1s, background 0.15s;
+                padding: 0;
+            }
+            .sidebar-toggle:hover  { background: var(--primary-dark); }
+            .sidebar-toggle:active { transform: scale(0.94); }
+
+            /* --- Backdrop behind the drawer --- */
+            .sidebar-backdrop {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.45);
+                opacity: 0;
+                pointer-events: none;
+                z-index: 90;
+                transition: opacity 0.25s ease;
+            }
+            .sidebar-backdrop.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            /* --- Lock background scroll while drawer is open --- */
+            body.sidebar-open { overflow: hidden; }
+
+            /* --- Main content: leave room for the toggle --- */
+            .main-content { padding: 68px 20px 90px 20px; }
             h1 { font-size: 2rem; }
             h2 { font-size: 1.5rem; margin-top: 40px; }
             .pdf-fab { display: flex; }
             .figure { padding: 14px 10px 10px; }
+        }
+
+        /* ============================================================
+           ADDITIONAL RESPONSIVE BREAKPOINTS
+           ============================================================ */
+
+        /* ---- Large desktop: wider breathing room ---- */
+        @media (min-width: 1200px) {
+            .main-content { padding: 44px 68px 110px 68px; }
+        }
+
+        /* ---- Ultra-wide screens ---- */
+        @media (min-width: 1600px) {
+            .layout { max-width: 1560px; }
+            .sidebar { width: 320px; }
+            .main-content { padding: 52px 90px 120px 90px; }
+        }
+
+        @media (min-width: 1900px) {
+            .layout { max-width: 1760px; }
+        }
+
+        /* ---- Small phones (≤ 640px) ---- */
+        @media (max-width: 640px) {
+            .main-content { padding: 68px 16px 84px 16px; }
+
+            h1 { font-size: 1.7rem; padding-bottom: 12px; margin-bottom: 16px; }
+            h2 { font-size: 1.35rem; margin-top: 38px; padding-bottom: 8px; }
+            h3 { font-size: 1.15rem; margin-top: 28px; }
+            h4 { font-size: 1rem; }
+
+            p, li { font-size: 0.98rem; overflow-wrap: break-word; }
+            ul, ol { margin-left: 18px; }
+            .lead { font-size: 1rem; }
+
+            pre { padding: 14px 12px; border-radius: 6px; margin-bottom: 6px; }
+            pre code { font-size: 0.82rem; line-height: 1.5; }
+            code { font-size: 0.86rem; padding: 1px 4px; }
+
+            .callout { padding: 14px 14px; margin: 20px 0; border-left-width: 5px; }
+            .callout-title { font-size: 0.98rem; gap: 8px; }
+
+            .output-block { padding: 10px 12px; font-size: 0.82rem; }
+            .output-title { font-size: 0.7rem; }
+
+            /* Horizontally scroll wide tables instead of breaking layout */
+            table {
+                display: block;
+                overflow-x: auto;
+                width: 100%;
+                -webkit-overflow-scrolling: touch;
+            }
+            th, td { padding: 8px 10px; font-size: 0.88rem; }
+            table { font-size: 0.88rem; }
+
+            .figure { padding: 12px 8px 10px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .figure svg { min-width: 500px; }
+            .figure-caption { font-size: 0.84rem; }
+
+            hr { margin: 32px 0; }
+
+            .search-input { font-size: 0.88rem; padding: 8px 30px 8px 30px; }
+            .sidebar-tools { padding-bottom: 12px; margin-bottom: 12px; }
+            .sidebar h2 { font-size: 1rem; }
+            .sidebar a { font-size: 0.88rem; padding: 4px 6px; }
+            .search-status { font-size: 0.72rem; }
+            mark.search-hit { scroll-margin: 70px; }
+        }
+
+        /* ---- Small phones (≤ 480px) ---- */
+        @media (max-width: 480px) {
+            .main-content { padding: 68px 12px 74px 12px; }
+
+            h1 { font-size: 1.45rem; }
+            h2 { font-size: 1.22rem; margin-top: 32px; }
+            h3 { font-size: 1.06rem; }
+            h4 { font-size: 0.96rem; }
+
+            p, li { font-size: 0.94rem; }
+            body { line-height: 1.62; }
+            ul, ol { margin-left: 16px; }
+            li { margin-bottom: 6px; }
+
+            pre { padding: 12px 10px; }
+            pre code { font-size: 0.76rem; line-height: 1.48; }
+            code { font-size: 0.82rem; }
+
+            .callout { padding: 12px 12px; margin: 18px 0; }
+            .callout-title { font-size: 0.92rem; }
+
+            .output-block { padding: 9px 10px; font-size: 0.78rem; }
+            .output-title { font-size: 0.68rem; }
+
+            th, td { padding: 6px 8px; font-size: 0.82rem; }
+            table { font-size: 0.82rem; }
+
+            .figure { padding: 10px 6px 8px; }
+            .figure svg { min-width: 420px; }
+            .figure-caption { font-size: 0.8rem; margin-top: 10px; }
+
+            hr { margin: 26px 0; }
+
+            .pdf-fab { padding: 10px 14px; font-size: 0.82rem; bottom: 14px; right: 14px; }
+        }
+
+        /* ---- Very small phones (≤ 360px) ---- */
+        @media (max-width: 360px) {
+            .main-content { padding: 66px 10px 64px 10px; }
+
+            h1 { font-size: 1.3rem; }
+            h2 { font-size: 1.12rem; }
+            h3 { font-size: 1rem; }
+
+            p, li { font-size: 0.9rem; }
+
+            pre code { font-size: 0.72rem; }
+            code { font-size: 0.78rem; }
+
+            .callout { padding: 10px 10px; }
+
+            .figure svg { min-width: 340px; }
+
+            .search-input { padding: 7px 28px 7px 28px; font-size: 0.85rem; }
+            .search-clear { width: 18px; height: 18px; right: 6px; font-size: 12px; }
+
+            .sidebar-toggle { width: 40px; height: 40px; top: 10px; left: 10px; }
+        }
+
+        /* ---- Touch devices: larger tap targets ---- */
+        @media (hover: none) and (pointer: coarse) {
+            .sidebar a { padding: 6px 8px; }
+            .icon-btn { width: 28px; height: 28px; font-size: 11px; }
+            .search-clear { width: 24px; height: 24px; }
+            .search-input { padding-right: 38px; }
+            .pdf-btn { padding: 11px 14px; }
+            .pdf-fab { padding: 13px 18px; }
+        }
+
+        /* ---- Short landscape viewports (phones turned sideways) ---- */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .sidebar { max-height: 100dvh; }
+            .pdf-fab { bottom: 10px; right: 10px; }
+        }
+
+        /* ---- Prefers reduced motion (accessibility) ---- */
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* ============================================================
@@ -517,7 +751,8 @@
             }
 
             .layout { display: block; max-width: none; margin: 0; }
-            .sidebar, .pdf-fab, .sidebar-tools { display: none !important; }
+            .sidebar, .pdf-fab, .sidebar-tools,
+            .sidebar-toggle, .sidebar-backdrop { display: none !important; }
 
             .main-content {
                 padding: 0;
@@ -584,12 +819,31 @@
 </head>
 <body>
 
+<!-- ============================================================
+     MOBILE SIDEBAR TOGGLE + BACKDROP
+     ============================================================ -->
+<div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+<button type="button" class="sidebar-toggle" id="sidebarToggle"
+        aria-label="Open navigation" aria-expanded="false" aria-controls="sidebar">
+    <svg class="icon-menu" viewBox="0 0 24 24" width="22" height="22" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <line x1="4" y1="7" x2="20" y2="7"></line>
+        <line x1="4" y1="12" x2="20" y2="12"></line>
+        <line x1="4" y1="17" x2="20" y2="17"></line>
+    </svg>
+    <svg class="icon-close" viewBox="0 0 24 24" width="22" height="22" fill="none"
+         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+    </svg>
+</button>
+
 <div class="layout">
 
     <!-- ============================================================
          SIDEBAR NAVIGATION
          ============================================================ -->
-    <nav class="sidebar" aria-label="Course navigation">
+    <nav class="sidebar" id="sidebar" aria-label="Course navigation">
 
         <div class="sidebar-tools">
             <div class="search-box">
@@ -4293,6 +4547,75 @@ cout &lt;&lt; arr[<span class="num">5</span>];        <span class="com">// witho
     let timer   = null;
 
     /* ============================================================
+       MOBILE SIDEBAR TOGGLE
+       ============================================================ */
+    const sidebar         = document.getElementById('sidebar');
+    const sidebarToggle   = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function isMobile() {
+        return window.matchMedia('(max-width: 900px)').matches;
+    }
+
+    function openSidebar() {
+        if (!isMobile()) return;
+        sidebar.classList.add('open');
+        sidebarBackdrop.classList.add('show');
+        document.body.classList.add('sidebar-open');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
+        sidebarToggle.setAttribute('aria-label', 'Close navigation');
+    }
+
+    function closeSidebar() {
+        const wasOpen = sidebar.classList.contains('open');
+        sidebar.classList.remove('open');
+        sidebarBackdrop.classList.remove('show');
+        document.body.classList.remove('sidebar-open');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+        sidebarToggle.setAttribute('aria-label', 'Open navigation');
+
+        // Return focus to the toggle for keyboard users
+        if (wasOpen && isMobile()) {
+            sidebarToggle.focus();
+        }
+    }
+
+    function toggleSidebar() {
+        if (sidebar.classList.contains('open')) closeSidebar();
+        else                                    openSidebar();
+    }
+
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', toggleSidebar);
+    }
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', closeSidebar);
+    }
+
+    // Close the drawer automatically when a nav link is clicked (mobile only)
+    if (sidebar) {
+        sidebar.querySelectorAll('a[href^="#"]').forEach(function (link) {
+            link.addEventListener('click', function () {
+                if (isMobile()) closeSidebar();
+            });
+        });
+    }
+
+    // Escape key closes the open drawer
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+
+    // Resize to desktop resets drawer state
+    window.addEventListener('resize', function () {
+        if (!isMobile() && sidebar && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+
+    /* ============================================================
        SEARCH — HIGHLIGHT HELPERS
        ============================================================ */
     function clearHighlights() {
@@ -4426,6 +4749,10 @@ cout &lt;&lt; arr[<span class="num">5</span>];        <span class="com">// witho
         if (e.key === 'Enter') {
             e.preventDefault();
             if (hits.length) setCurrent(current + (e.shiftKey ? -1 : 1));
+            // On mobile, close the drawer so the match is visible
+            if (isMobile() && sidebar && sidebar.classList.contains('open')) {
+                closeSidebar();
+            }
         } else if (e.key === 'Escape') {
             searchInput.value = '';
             clearBtn.hidden = true;
@@ -4449,6 +4776,10 @@ cout &lt;&lt; arr[<span class="num">5</span>];        <span class="com">// witho
     document.addEventListener('keydown', function (e) {
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
             e.preventDefault();
+            // On mobile, open the drawer so the search input is reachable
+            if (isMobile() && sidebar && !sidebar.classList.contains('open')) {
+                openSidebar();
+            }
             searchInput.focus();
             searchInput.select();
         }
