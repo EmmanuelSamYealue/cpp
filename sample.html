@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Course — Super Simple Beginner Guide</title>
+<style>
+    :root {
+        --primary: #1a73e8;
+        --primary-dark: #1557b0;
+        --bg-body: #f8f9fa;
+        --bg-card: #ffffff;
+        --text-main: #202124;
+        --text-muted: #5f6368;
+        --border: #dadce0;
+        --code-bg: #282c34;
+        --code-text: #abb2bf;
+        --code-keyword: #c678dd;
+        --code-string: #98c379;
+        --code-comment: #5c6370;
+        --code-function: #61afef;
+        --code-number: #d19a66;
+        --code-type: #e5c07b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 20px; }
+    body {
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.8;
+        color: var(--text-main);
+        background-color: var(--bg-body);
+    }
+    .layout { display: flex; max-width: 1400px; margin: 0 auto; }
+    .sidebar {
+        width: 300px; height: 100vh; position: sticky; top: 0;
+        background-color: var(--bg-card); border-right: 1px solid var(--border);
+        padding: 20px; overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .sidebar-tools { margin-bottom: 18px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .search-box { position: relative; display: flex; align-items: center; }
+    .search-icon { position: absolute; left: 10px; color: var(--text-muted); pointer-events: none; }
+    .search-input {
+        width: 100%; padding: 9px 34px 9px 32px;
+        border: 1.5px solid var(--border); border-radius: 8px;
+        font-family: inherit; font-size: 0.9rem; background-color: #fafbfc; outline: none;
+    }
+    .search-input:focus { border-color: var(--primary); background-color: #fff; box-shadow: 0 0 0 3px rgba(26,115,232,0.15); }
+    .search-clear {
+        position: absolute; right: 8px; width: 20px; height: 20px;
+        display: flex; align-items: center; justify-content: center;
+        border: none; background: #e0e4e8; color: #555;
+        border-radius: 50%; font-size: 14px; cursor: pointer; padding: 0;
+    }
+    .search-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; min-height: 22px; gap: 8px; }
+    .search-status { font-size: 0.74rem; color: var(--text-muted); font-weight: 600; }
+    .search-status.none { color: #d93025; }
+    .search-nav { display: flex; gap: 4px; }
+    .icon-btn {
+        width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+        border: 1px solid var(--border); background: #fff; color: var(--text-muted);
+        border-radius: 5px; font-size: 9px; cursor: pointer;
+    }
+    .pdf-btn {
+        margin-top: 12px; width: 100%; display: flex; align-items: center; justify-content: center;
+        gap: 8px; padding: 9px 12px; border: none; border-radius: 8px;
+        background: var(--primary); color: #fff; font-family: inherit; font-size: 0.86rem;
+        font-weight: 600; cursor: pointer;
+    }
+    .pdf-btn:hover { background: var(--primary-dark); }
+    .sidebar h2 { font-size: 1.1rem; color: var(--primary); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar ul { list-style: none; }
+    .sidebar li { margin-bottom: 8px; }
+    .sidebar a {
+        text-decoration: none; color: var(--text-muted); font-size: 0.92rem;
+        display: block; padding: 3px 6px; border-radius: 4px; border-left: 3px solid transparent;
+    }
+    .sidebar a:hover { color: var(--primary); background-color: #e8f0fe; border-left-color: var(--primary); font-weight: 600; }
+    .sidebar .divider { height: 1px; background: var(--border); margin: 14px 0; }
+    .main-content {
+        flex: 1; min-width: 0; padding: 40px 60px 100px 60px;
+        background-color: var(--bg-card); box-shadow: 0 0 20px rgba(0,0,0,0.05);
+    }
+    h1 { font-size: 2.6rem; line-height: 1.2; color: var(--primary-dark); border-bottom: 3px solid var(--primary); padding-bottom: 15px; margin-bottom: 20px; }
+    h2 { font-size: 1.85rem; color: var(--primary); margin-top: 60px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    h3 { font-size: 1.3rem; color: var(--text-main); margin-top: 35px; margin-bottom: 12px; }
+    h4 { font-size: 1.08rem; color: var(--primary-dark); margin-top: 22px; margin-bottom: 8px; }
+    p { margin-bottom: 15px; font-size: 1.03rem; }
+    ul, ol { margin: 0 0 18px 24px; }
+    li { margin-bottom: 8px; font-size: 1.02rem; }
+    strong { color: #111; }
+    code {
+        background-color: #f1f3f4; padding: 2px 6px; border-radius: 4px;
+        font-family: 'Consolas', monospace; font-size: 0.92rem; color: #d93025; word-break: break-word;
+    }
+    pre { background-color: var(--code-bg); padding: 20px; border-radius: 8px; overflow-x: auto; margin-bottom: 8px; }
+    pre code { background-color: transparent; color: var(--code-text); padding: 0; font-size: 0.93rem; line-height: 1.6; white-space: pre; }
+    .kw { color: var(--code-keyword); font-weight: bold; }
+    .str { color: var(--code-string); }
+    .com { color: var(--code-comment); font-style: italic; }
+    .fn { color: var(--code-function); }
+    .num { color: var(--code-number); }
+    .type { color: var(--code-type); }
+    .pp { color: #56b6c2; }
+    .callout { padding: 18px 20px; border-radius: 8px; margin: 25px 0; border-left: 6px solid; background-color: #f8f9fa; }
+    .callout-title { font-weight: bold; font-size: 1.02rem; margin-bottom: 8px; }
+    .callout p:last-child, .callout ul:last-child, .callout pre:last-child { margin-bottom: 0; }
+    .callout.note { border-color: #1a73e8; background-color: #e8f0fe; }
+    .callout.note .callout-title { color: #1a73e8; }
+    .callout.warning { border-color: #d93025; background-color: #fce8e6; }
+    .callout.warning .callout-title { color: #d93025; }
+    .callout.tip { border-color: #188038; background-color: #e6f4ea; }
+    .callout.tip .callout-title { color: #188038; }
+    .callout.story { border-color: #f29900; background-color: #fef7e0; }
+    .callout.story .callout-title { color: #b06000; }
+    .output-block {
+        background-color: #e8eaed; padding: 14px 18px; border-radius: 0 0 8px 8px;
+        font-family: 'Consolas', monospace; font-size: 0.9rem;
+        margin-top: -8px; margin-bottom: 25px; border: 1px solid var(--border);
+        border-top: none; white-space: pre-wrap; line-height: 1.5;
+    }
+    .output-title {
+        font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px;
+        color: var(--text-muted); margin-bottom: 6px; font-weight: bold; font-family: 'Segoe UI', sans-serif;
+    }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.95rem; }
+    th, td { padding: 10px 14px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background-color: #eef3fc; font-weight: 700; color: var(--primary-dark); }
+    tr:nth-child(even) { background-color: #fafafa; }
+    td code { font-size: 0.85rem; }
+    .lead { font-size: 1.1rem; color: var(--text-muted); font-style: italic; }
+    hr { margin: 50px 0; border: none; border-top: 1px solid var(--border); }
+    .center { text-align: center; color: var(--text-muted); }
+    .line-explain { margin: 14px 0 22px; border-left: 3px solid var(--primary); padding-left: 16px; }
+    .line-explain p { margin-bottom: 10px; font-size: 0.98rem; }
+    .line-explain b { color: var(--primary-dark); }
+    mark.search-hit { background: #fff3a3; color: inherit; padding: 0 1px; border-radius: 2px; }
+    mark.search-hit.current { background: #ffb300; color: #111; box-shadow: 0 0 0 2px #d93025; }
+    .pdf-fab { display: none; position: fixed; bottom: 20px; right: 20px; z-index: 50; align-items: center; gap: 7px; padding: 11px 16px; border: none; border-radius: 50px; background: var(--primary); color: #fff; font-family: inherit; font-size: 0.88rem; font-weight: 700; cursor: pointer; }
+    .sidebar-toggle { display: none; }
+    .sidebar-backdrop { display: none; }
+    .sidebar-toggle .icon-close { display: none; }
+    .sidebar-toggle[aria-expanded="true"] .icon-menu { display: none; }
+    .sidebar-toggle[aria-expanded="true"] .icon-close { display: block; }
+    @media (max-width: 900px) {
+        .layout { flex-direction: column; }
+        .sidebar { position: fixed; top: 0; left: 0; width: min(320px, 85vw); height: 100vh; z-index: 100; transform: translateX(-100%); visibility: hidden; transition: transform 0.25s ease, visibility 0.25s ease; padding: 64px 20px 20px; overflow-y: auto; }
+        .sidebar.open { transform: translateX(0); visibility: visible; }
+        .sidebar-toggle { display: flex; position: fixed; top: 12px; left: 12px; z-index: 110; width: 44px; height: 44px; align-items: center; justify-content: center; border: none; border-radius: 10px; background: var(--primary); color: #fff; cursor: pointer; }
+        .sidebar-backdrop { display: block; position: fixed; inset: 0; background: rgba(0,0,0,0.45); opacity: 0; pointer-events: none; z-index: 90; transition: opacity 0.25s ease; }
+        .sidebar-backdrop.show { opacity: 1; pointer-events: auto; }
+        body.sidebar-open { overflow: hidden; }
+        .main-content { padding: 68px 20px 90px 20px; }
+        h1 { font-size: 2rem; }
+        h2 { font-size: 1.5rem; margin-top: 40px; }
+        .pdf-fab { display: flex; }
+    }
+    @media (max-width: 640px) {
+        .main-content { padding: 68px 16px 84px 16px; }
+        h1 { font-size: 1.7rem; }
+        h2 { font-size: 1.35rem; }
+        pre { padding: 14px 12px; }
+        pre code { font-size: 0.82rem; }
+        table { display: block; overflow-x: auto; }
+        p, li { font-size: 0.98rem; }
+    }
+    @media print {
+        .sidebar, .pdf-fab, .sidebar-toggle, .sidebar-backdrop { display: none !important; }
+        .main-content { padding: 0; box-shadow: none; }
+        h2 { break-before: page; page-break-before: always; }
+        h2:first-of-type { break-before: auto; }
+        pre, .output-block, .callout, table { break-inside: avoid; page-break-inside: avoid; }
+    }
+</style>
+</head>
+<body>
+
+<div class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true"></div>
+<button type="button" class="sidebar-toggle" id="sidebarToggle" aria-label="Open navigation" aria-expanded="false">
+    <svg class="icon-menu" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="17" x2="20" y2="17"></line></svg>
+    <svg class="icon-close" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line></svg>
+</button>
+
+<div class="layout">
+    <nav class="sidebar" id="sidebar" aria-label="Course navigation">
+        <div class="sidebar-tools">
+            <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="16.5" y1="16.5" x2="21" y2="21"></line></svg>
+                <input type="search" id="searchInput" class="search-input" placeholder="Search notes…" autocomplete="off">
+                <button type="button" id="searchClear" class="search-clear" title="Clear" hidden>&times;</button>
+            </div>
+            <div class="search-row">
+                <span id="searchStatus" class="search-status"></span>
+                <div class="search-nav" id="searchNav" hidden>
+                    <button type="button" id="prevMatch" class="icon-btn">&#9650;</button>
+                    <button type="button" id="nextMatch" class="icon-btn">&#9660;</button>
+                </div>
+            </div>
+            <button type="button" class="pdf-btn" data-pdf>Download PDF</button>
+        </div>
+        <h2>Course Content</h2>
+        <ul>
+            <li><a href="#words">Words You'll See</a></li>
+            <li><a href="#setup">0. Getting Ready</a></li>
+            <li><a href="#intro">1. What Is Programming?</a></li>
+            <li><a href="#syntax">2. Printing Text</a></li>
+            <li><a href="#variables">3. Variables (Boxes)</a></li>
+            <li><a href="#input">4. Asking the User</a></li>
+            <li><a href="#operators">5. Math in C++</a></li>
+            <li><a href="#strings">6. Text (Strings)</a></li>
+            <li><a href="#booleans">7. Making Decisions</a></li>
+            <li><a href="#switch">8. Menu Choices</a></li>
+            <li><a href="#loops">9. Repeating Things</a></li>
+            <li><a href="#arrays">10. Lists of Things</a></li>
+            <li><a href="#functions">11. Reusable Recipes</a></li>
+            <li><a href="#pointers">12. Addresses (Pointers)</a></li>
+            <li><a href="#oop">13. Blueprints (OOP)</a></li>
+            <li><a href="#modern">14. Modern C++</a></li>
+            <li><a href="#files">15. Files &amp; Errors</a></li>
+            <li><a href="#impact">16. Where C++ Is Used</a></li>
+            <div class="divider"></div>
+            <li><a href="#errors">Common Errors</a></li>
+            <li><a href="#exercises">Practice</a></li>
+        </ul>
+    </nav>
+
+    <main class="main-content">
+
+        <h1>C++ — Explained Like You're Five</h1>
+        <p class="lead">Every idea below starts with a real-life picture. No prior experience needed. Read slowly, type every example, and don't worry about mistakes — they're part of learning.</p>
+
+        <div class="callout note">
+            <div class="callout-title">📘 How to read this guide</div>
+            <p>Each section follows the same pattern: <strong>(1)</strong> a picture in your head, <strong>(2)</strong> the technical name, <strong>(3)</strong> a complete example, <strong>(4)</strong> a line-by-line walk-through, and <strong>(5)</strong> the mistake everyone makes. If a word confuses you, keep reading — it will be explained right after.</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="words">Words You'll See (Simplified Glossary)</h2>
+        <p>Programming uses a lot of scary-sounding words. Here is every word you need, with a picture that makes it click. Don't memorise — just skim. Come back when needed.</p>
+
+        <table>
+            <tr><th>Word</th><th>What It Really Means</th><th>Picture It Like…</th></tr>
+            <tr><td><strong>Program</strong></td><td>A list of steps a computer follows.</td><td>A recipe for a cake.</td></tr>
+            <tr><td><strong>Code</strong></td><td>The text you type to write a program.</td><td>The written recipe on paper.</td></tr>
+            <tr><td><strong>Compiler</strong></td><td>A tool that translates your code into something the computer understands.</td><td>A translator turning English into French.</td></tr>
+            <tr><td><strong>Bug</strong></td><td>A mistake in the code.</td><td>A wrong step in the recipe.</td></tr>
+            <tr><td><strong>Variable</strong></td><td>A named box that holds a value.</td><td>A labelled jar on a shelf.</td></tr>
+            <tr><td><strong>Type</strong></td><td>What kind of value a box can hold.</td><td>The shape of the jar (round jar → round things).</td></tr>
+            <tr><td><strong>Function</strong></td><td>A mini-program you can use again and again.</td><td>A recipe card you can follow any number of times.</td></tr>
+            <tr><td><strong>Loop</strong></td><td>Doing something over and over.</td><td>Stirring a pot 20 times.</td></tr>
+            <tr><td><strong>Condition</strong></td><td>A yes/no question the computer checks.</td><td>"Is it raining? If yes, take an umbrella."</td></tr>
+            <tr><td><strong>Array / Vector</strong></td><td>A list of values under one name.</td><td>A row of numbered lockers.</td></tr>
+            <tr><td><strong>String</strong></td><td>A piece of text.</td><td>A note with words on it.</td></tr>
+            <tr><td><strong>Integer (int)</strong></td><td>A whole number.</td><td>1, 2, 3, 100.</td></tr>
+            <tr><td><strong>Double / float</strong></td><td>A number with a decimal point.</td><td>3.14, 99.99.</td></tr>
+            <tr><td><strong>Bool</strong></td><td>Only two values: true or false.</td><td>A light switch: on or off.</td></tr>
+            <tr><td><strong>Pointer</strong></td><td>A value that says "the real thing is over there."</td><td>A note saying "look on shelf 3".</td></tr>
+            <tr><td><strong>Class</strong></td><td>A blueprint for making objects.</td><td>A cookie cutter.</td></tr>
+            <tr><td><strong>Object</strong></td><td>An actual thing made from a blueprint.</td><td>An actual cookie.</td></tr>
+            <tr><td><strong>Syntax error</strong></td><td>Your code is written in a way the computer can't read.</td><td>Grammar mistake in a sentence.</td></tr>
+            <tr><td><strong>Output</strong></td><td>What the program prints or shows.</td><td>The cake that comes out of the oven.</td></tr>
+        </table>
+
+        <!-- ============================================================ -->
+        <h2 id="setup">0. Getting Ready</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🏠 Picture this</div>
+            <p>To bake a cake, you need two things: an <strong>oven</strong> and a <strong>kitchen</strong> to work in. In programming, the <strong>compiler</strong> is the oven (it turns your code into a running program) and the <strong>editor</strong> is the kitchen (where you type your code).</p>
+        </div>
+
+        <h3>0.1 The Two Things You Need</h3>
+        <table>
+            <tr><th>Thing</th><th>What It Does</th><th>Examples</th></tr>
+            <tr><td><strong>Compiler</strong></td><td>Turns your <code>.cpp</code> text file into a program you can run.</td><td>GCC (g++), Clang, MSVC</td></tr>
+            <tr><td><strong>Editor / IDE</strong></td><td>The window where you type your code.</td><td>Code::Blocks, Visual Studio, VS Code</td></tr>
+        </table>
+
+        <h3>0.2 Easiest Path for a Complete Beginner</h3>
+        <ol>
+            <li>Go to <code>codeblocks.org</code>.</li>
+            <li>Download the file whose name ends with <strong>mingw-setup.exe</strong> — this includes the compiler for you.</li>
+            <li>Install it (just click Next, Next, Next).</li>
+            <li>Open Code::Blocks. Click <strong>File → New → Empty File</strong>.</li>
+            <li>Type the example below, save as <code>hello.cpp</code>.</li>
+            <li>Press <strong>F9</strong>. Your program runs.</li>
+        </ol>
+
+        <h3>0.3 First Test</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    cout &lt;&lt; <span class="str">"It works!\n"</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>It works!</div>
+
+        <p><strong>If you see "It works!" — you're ready.</strong> If not, the problem is almost always installation, not your code. Reinstall using the <code>mingw-setup.exe</code> file.</p>
+
+        <!-- ============================================================ -->
+        <h2 id="intro">1. What Is Programming?</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🥪 Picture this</div>
+            <p>Imagine you're teaching a robot to make a peanut-butter sandwich. You can't just say "make a sandwich" — the robot has no idea what that means. You must say:</p>
+            <ol>
+                <li>Pick up a slice of bread.</li>
+                <li>Open the peanut butter jar.</li>
+                <li>Spread peanut butter on the bread.</li>
+                <li>Put the second slice on top.</li>
+            </ol>
+            <p>That numbered list is a <strong>program</strong>. The robot is the <strong>computer</strong>. The words you use to tell it (English, or in our case C++) is the <strong>programming language</strong>.</p>
+            <p>The computer is <em>extremely literal</em>. It does exactly what you say, in exactly the order you say. If you forget a step, it won't guess — it'll just fail. That's why programming needs care.</p>
+        </div>
+
+        <h3>1.1 What Is C++?</h3>
+        <p>C++ is a language for giving instructions to a computer. It was invented by Bjarne Stroustrup in 1979. It's used in video games (Fortnite), web browsers (Chrome), operating systems (Windows), self-driving cars, and much more.</p>
+
+        <p><strong>Why people like it:</strong></p>
+        <ul>
+            <li>It's <strong>fast</strong> — one of the fastest languages that's still readable.</li>
+            <li>It gives you <strong>control</strong> over the computer's memory.</li>
+            <li>It runs on <strong>almost every device</strong> in the world.</li>
+        </ul>
+
+        <h3>1.2 What Happens When You Press "Run"?</h3>
+        <p>This is important. Three things happen, in order:</p>
+        <ol>
+            <li><strong>You write</strong> a <code>.cpp</code> file — plain text.</li>
+            <li><strong>The compiler</strong> reads it and translates it into machine language (1s and 0s) the CPU understands.</li>
+            <li><strong>The resulting program</strong> runs and does what you told it.</li>
+        </ol>
+
+        <table>
+            <tr><th>Step</th><th>If it goes wrong, the error looks like…</th></tr>
+            <tr><td>Preprocessing (bringing in files)</td><td><code>fatal error: iostream: No such file</code></td></tr>
+            <tr><td>Compiling (checking your grammar)</td><td><code>error: expected ';' before 'return'</code></td></tr>
+            <tr><td>Linking (joining pieces)</td><td><code>undefined reference to 'add'</code></td></tr>
+            <tr><td>Running (executing)</td><td>Crash, or wrong answer</td></tr>
+        </table>
+
+        <h3>1.3 Your First Program — Line by Line</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    cout &lt;&lt; <span class="str">"Hello World!"</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Hello World!</div>
+
+        <div class="line-explain">
+            <p><b>Line 1:</b> <code>#include &lt;iostream&gt;</code> — "Bring in the input/output toolbox." Without this, the computer has no idea what <code>cout</code> means.</p>
+            <p><b>Line 2:</b> <code>using namespace std;</code> — "Use the standard toolbox without a long prefix." It's a convenience so you can write <code>cout</code> instead of <code>std::cout</code>.</p>
+            <p><b>Line 4:</b> <code>int main()</code> — "Here is where the program starts." Every C++ program must have a <code>main</code>. When you run the program, the computer jumps here first.</p>
+            <p><b>Line 5:</b> <code>cout &lt;&lt; "Hello World!";</code> — "Print this text on the screen." Think of <code>cout</code> as the screen, and <code>&lt;&lt;</code> as an arrow pushing text into it.</p>
+            <p><b>Line 6:</b> <code>return 0;</code> — "I finished successfully." A <code>0</code> means "no error". If something went wrong, you'd return a different number.</p>
+        </div>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ The three mistakes every beginner makes</div>
+            <ul>
+                <li><strong>Wrong capital letter.</strong> <code>cout</code> is right. <code>Cout</code> and <code>COUT</code> are wrong. C++ is case-sensitive.</li>
+                <li><strong>Missing semicolon.</strong> Every instruction ends with <code>;</code> — like the period at the end of a sentence.</li>
+                <li><strong>Missing <code>main</code>.</strong> No <code>main</code> function = nothing to run.</li>
+            </ul>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="syntax">2. Printing Text</h2>
+
+        <div class="callout story">
+            <div class="callout-title">💬 Picture this</div>
+            <p><code>cout</code> is like a <strong>loudspeaker</strong>. Whatever you put into it comes out on the screen. You put things in using the <code>&lt;&lt;</code> arrows.</p>
+        </div>
+
+        <h3>2.1 Printing Text vs Printing Numbers</h3>
+        <p><strong>Text goes in double quotes.</strong> Numbers do not.</p>
+
+        <pre><code><span class="com">// Correct: text has quotes, number doesn't</span>
+cout &lt;&lt; <span class="str">"I am "</span> &lt;&lt; <span class="num">25</span> &lt;&lt; <span class="str">" years old."</span>;</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>I am 25 years old.</div>
+
+        <p>Why? Because <code>"25"</code> (with quotes) means "the characters 2 and 5" and <code>25</code> (without quotes) means "the number twenty-five". They look the same on screen but the computer treats them differently.</p>
+
+        <h3>2.2 Making a New Line</h3>
+        <p>If you print two things, they'll run together on the same line — like gluing two sentences with no space:</p>
+        <pre><code>cout &lt;&lt; <span class="str">"Hello"</span>;
+cout &lt;&lt; <span class="str">"World"</span>;</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>HelloWorld</div>
+
+        <p>To push the next thing to a new line, use <code>\n</code>:</p>
+        <pre><code>cout &lt;&lt; <span class="str">"Hello\n"</span>;
+cout &lt;&lt; <span class="str">"World"</span>;</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Hello
+World</div>
+
+        <p><strong>Or</strong> use <code>endl</code> (which means "end line"):</p>
+        <pre><code>cout &lt;&lt; <span class="str">"Hello"</span> &lt;&lt; endl;
+cout &lt;&lt; <span class="str">"World"</span>;</code></pre>
+
+        <p>Both do the same thing. Most people use <code>\n</code> because it's shorter.</p>
+
+        <h3>2.3 Other Useful Escape Sequences</h3>
+        <table>
+            <tr><th>Type this</th><th>You get</th></tr>
+            <tr><td><code>\n</code></td><td>Go to the next line</td></tr>
+            <tr><td><code>\t</code></td><td>A tab (like 4 spaces)</td></tr>
+            <tr><td><code>\\</code></td><td>A single backslash</td></tr>
+            <tr><td><code>\"</code></td><td>A double quote inside quotes</td></tr>
+        </table>
+
+        <h4>Example with quotes and tabs:</h4>
+        <pre><code>cout &lt;&lt; <span class="str">"Name\tAge\n"</span>;
+cout &lt;&lt; <span class="str">"Bob\t25\n"</span>;
+cout &lt;&lt; <span class="str">"She said \"hi\"\n"</span>;</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Name	Age
+Bob	25
+She said "hi"</div>
+
+        <h3>2.4 Comments — Notes to Yourself</h3>
+        <p>Comments are text the computer <strong>ignores</strong>. Use them to explain what your code does.</p>
+        <pre><code><span class="com">// This is a comment — one line</span>
+
+<span class="com">/* This is also a comment
+   but it can span
+   multiple lines */</span></code></pre>
+
+        <div class="callout tip">
+            <div class="callout-title">💡 What makes a good comment?</div>
+            <p>Write <strong>why</strong>, not <strong>what</strong>. The code already says what it does.</p>
+            <p>❌ <code>// add one to x</code> — useless, we can see that.</p>
+            <p>✅ <code>// retry once because the sensor sometimes fails</code> — useful!</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="variables">3. Variables — Named Boxes</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🫙 Picture this</div>
+            <p>Imagine a row of jars on a shelf. Each jar has a <strong>label</strong> written on it ("sugar", "flour", "salt") and <strong>something inside</strong>. A variable is exactly like that:</p>
+            <ul>
+                <li><strong>The label</strong> = the variable's name (<code>age</code>)</li>
+                <li><strong>The contents</strong> = the variable's value (<code>25</code>)</li>
+                <li><strong>The type of jar</strong> = the variable's type (<code>int</code>, <code>string</code>, etc.)</li>
+            </ul>
+            <p>A jar labelled "sugar" only holds sugar — not milk. In the same way, a variable of type <code>int</code> can only hold whole numbers.</p>
+        </div>
+
+        <h3>3.1 Making a Variable (Declaring It)</h3>
+        <p>The pattern is always: <strong>type, then name, then value.</strong></p>
+
+        <pre><code><span class="type">int</span> age = <span class="num">25</span>;</code></pre>
+
+        <div class="line-explain">
+            <p><b><code>int</code></b> — "I want a box that holds whole numbers."</p>
+            <p><b><code>age</code></b> — "Label this box 'age'."</p>
+            <p><b><code>= 25</code></b> — "Put the number 25 inside."</p>
+            <p><b><code>;</code></b> — "End of instruction."</p>
+        </div>
+
+        <h3>3.2 The 5 Types You Need</h3>
+        <table>
+            <tr><th>Type</th><th>Holds</th><th>Example</th></tr>
+            <tr><td><code>int</code></td><td>Whole numbers</td><td><code>int age = 25;</code></td></tr>
+            <tr><td><code>double</code></td><td>Decimals</td><td><code>double price = 19.99;</code></td></tr>
+            <tr><td><code>char</code></td><td>One character (in single quotes)</td><td><code>char grade = 'A';</code></td></tr>
+            <tr><td><code>string</code></td><td>Text (in double quotes)</td><td><code>string name = "Alice";</code></td></tr>
+            <tr><td><code>bool</code></td><td>true or false</td><td><code>bool isReady = true;</code></td></tr>
+        </table>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Single quotes vs double quotes — they are NOT the same</div>
+            <p><code>'A'</code> (single quotes) = one <strong>char</strong>.</p>
+            <p><code>"A"</code> (double quotes) = a <strong>string</strong> (text) that happens to have one letter.</p>
+            <p>Mixing them up causes compile errors. Remember: <strong>char = one character = single quotes.</strong></p>
+        </div>
+
+        <h3>3.3 Using a Variable</h3>
+        <pre><code><span class="type">int</span> age = <span class="num">25</span>;
+cout &lt;&lt; <span class="str">"Age is "</span> &lt;&lt; age;</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Age is 25</div>
+
+        <p>See? You put <code>age</code> (the label) into <code>cout</code>, and the computer looks up what's inside and prints it.</p>
+
+        <h3>3.4 Changing What's Inside</h3>
+        <pre><code><span class="type">int</span> score = <span class="num">10</span>;
+score = <span class="num">50</span>;              <span class="com">// old value 10 is thrown away</span>
+cout &lt;&lt; score;            <span class="com">// prints 50</span></code></pre>
+
+        <p>The <code>=</code> sign is not "equals" like in math — it means <strong>"put this in the box"</strong>. So <code>score = 50</code> means "empty out score and put 50 in it".</p>
+
+        <h3>3.5 Constants — Boxes That Can't Change</h3>
+        <p>Sometimes you want a value that <em>never</em> changes. Use <code>const</code>:</p>
+        <pre><code><span class="kw">const</span> <span class="type">double</span> PI = <span class="num">3.14159</span>;
+PI = <span class="num">3.0</span>;   <span class="com">// ✗ ERROR — cannot change a constant</span></code></pre>
+
+        <div class="callout story">
+            <div class="callout-title">📜 Picture this</div>
+            <p><code>const</code> is like a value written in permanent marker — it's on the jar and can never be changed. Use it for true facts that won't change, like the number of minutes in an hour (60), or the value of PI.</p>
+        </div>
+
+        <h3>3.6 Naming Your Variables</h3>
+        <p>Rules:</p>
+        <ul>
+            <li>Start with a letter or underscore: <code>age</code>, <code>_count</code>.</li>
+            <li>Cannot start with a number: <code>2age</code> ❌</li>
+            <li>No spaces or symbols: <code>my age</code> ❌, <code>my_age</code> ✅</li>
+            <li>Case matters: <code>Age</code> and <code>age</code> are two different boxes.</li>
+        </ul>
+        <p>Good names are <strong>descriptive</strong>. Prefer <code>studentAge</code> over <code>x</code>.</p>
+
+        <h3>3.7 Putting It All Together</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">string</span> name = <span class="str">"Alice"</span>;
+    <span class="type">int</span>    age  = <span class="num">25</span>;
+    <span class="type">double</span> height = <span class="num">1.68</span>;
+    <span class="type">char</span>   grade = <span class="str">'A'</span>;
+
+    cout &lt;&lt; name &lt;&lt; <span class="str">" is "</span> &lt;&lt; age &lt;&lt; <span class="str">" years old.\n"</span>;
+    cout &lt;&lt; <span class="str">"Height: "</span> &lt;&lt; height &lt;&lt; <span class="str">"m, grade "</span> &lt;&lt; grade &lt;&lt; <span class="str">"\n"</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Alice is 25 years old.
+Height: 1.68m, grade A</div>
+
+        <!-- ============================================================ -->
+        <h2 id="input">4. Asking the User for Input</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🎤 Picture this</div>
+            <p><code>cout</code> is your program's <strong>mouth</strong> (it speaks to the user). <code>cin</code> is its <strong>ear</strong> (it listens to the user). When you type on the keyboard, <code>cin</code> catches what you typed and stores it in a variable.</p>
+        </div>
+
+        <h3>4.1 Reading a Number</h3>
+        <pre><code><span class="type">int</span> age;
+cout &lt;&lt; <span class="str">"How old are you? "</span>;
+cin  &gt;&gt; age;
+cout &lt;&lt; <span class="str">"You are "</span> &lt;&lt; age &lt;&lt; <span class="str">" years old.\n"</span>;</code></pre>
+        <div class="output-block">
+            <div class="output-title">Example run</div>How old are you? 25
+You are 25 years old.</div>
+
+        <div class="line-explain">
+            <p><b><code>int age;</code></b> — "Make an empty box called age."</p>
+            <p><b><code>cin &gt;&gt; age;</code></b> — "Listen to the keyboard, and put whatever number the user types into the box called age."</p>
+            <p>The arrows <code>&gt;&gt;</code> point <strong>into</strong> the variable — think "the user's typing flows into <code>age</code>".</p>
+        </div>
+
+        <h3>4.2 Reading a Whole Line of Text</h3>
+        <p><strong>Careful!</strong> <code>cin &gt;&gt;</code> stops at the first space. It reads <strong>one word</strong>, not a whole sentence.</p>
+
+        <pre><code><span class="type">string</span> name;
+cout &lt;&lt; <span class="str">"Full name? "</span>;
+cin  &gt;&gt; name;</code></pre>
+        <div class="output-block">
+            <div class="output-title">If you type "John Smith"</div>You typed: John</div>
+
+        <p>The "Smith" part gets lost! To read the whole line, use <code>getline</code>:</p>
+        <pre><code><span class="type">string</span> name;
+cout &lt;&lt; <span class="str">"Full name? "</span>;
+<span class="fn">getline</span>(cin, name);   <span class="com">// reads the WHOLE line, spaces included</span>
+cout &lt;&lt; <span class="str">"Hello, "</span> &lt;&lt; name &lt;&lt; <span class="str">"!\n"</span>;</code></pre>
+        <div class="output-block">
+            <div class="output-title">If you type "John Smith"</div>Hello, John Smith!</div>
+
+        <h3>4.3 A Complete Example</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="pp">#include</span> <span class="str">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="type">string</span> name;
+    <span class="type">int</span>    age;
+
+    cout &lt;&lt; <span class="str">"Your name: "</span>;
+    <span class="fn">getline</span>(cin, name);
+
+    cout &lt;&lt; <span class="str">"Your age: "</span>;
+    cin &gt;&gt; age;
+
+    cout &lt;&lt; <span class="str">"Hello "</span> &lt;&lt; name &lt;&lt; <span class="str">"! You are "</span> &lt;&lt; age &lt;&lt; <span class="str">".\n"</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Example run</div>Your name: John Smith
+Your age: 25
+Hello John Smith! You are 25.</div>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ The trickiest bug in beginner C++</div>
+            <p>If you use <code>cin &gt;&gt; number;</code> and then <code>getline(cin, text);</code> right after, <code>getline</code> reads an empty line. Why? Because <code>cin &gt;&gt;</code> leaves the "Enter key press" (newline) in the buffer, and <code>getline</code> thinks that's your input.</p>
+            <p><strong>Fix:</strong> put <code>cin.ignore();</code> between them.</p>
+            <pre><code>cin &gt;&gt; age;
+cin.<span class="fn">ignore</span>();   <span class="com">// eat the leftover newline</span>
+<span class="fn">getline</span>(cin, name);</code></pre>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="operators">5. Math in C++</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🧮 Picture this</div>
+            <p>C++ is a very good calculator. You can do all the basic math with the usual symbols — plus a couple of special ones.</p>
+        </div>
+
+        <h3>5.1 The Basic Operators</h3>
+        <table>
+            <tr><th>Symbol</th><th>Meaning</th><th>Example</th><th>Result</th></tr>
+            <tr><td><code>+</code></td><td>Add</td><td><code>3 + 5</code></td><td>8</td></tr>
+            <tr><td><code>-</code></td><td>Subtract</td><td><code>10 - 4</code></td><td>6</td></tr>
+            <tr><td><code>*</code></td><td>Multiply</td><td><code>6 * 7</code></td><td>42</td></tr>
+            <tr><td><code>/</code></td><td>Divide</td><td><code>20 / 4</code></td><td>5</td></tr>
+            <tr><td><code>%</code></td><td>Remainder</td><td><code>10 % 3</code></td><td>1</td></tr>
+        </table>
+
+        <h3>5.2 The Integer Division Trap</h3>
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Whole numbers ÷ whole numbers = whole number</div>
+            <p>If both sides of <code>/</code> are <code>int</code>, the decimal part is <strong>thrown away</strong> (not rounded).</p>
+            <pre><code><span class="type">int</span> a = <span class="num">10</span>;
+<span class="type">int</span> b = <span class="num">3</span>;
+cout &lt;&lt; a / b;   <span class="com">// prints 3, not 3.33</span></code></pre>
+            <p>The computer does <code>10 / 3 = 3</code>, then stops. It doesn't know what to do with the "1 leftover" unless you ask.</p>
+            <p><strong>Fix:</strong> make at least one side a decimal:</p>
+            <pre><code><span class="type">double</span> a = <span class="num">10.0</span>;
+<span class="type">double</span> b = <span class="num">3.0</span>;
+cout &lt;&lt; a / b;   <span class="com">// prints 3.33333</span></code></pre>
+        </div>
+
+        <h3>5.3 The Remainder Operator (<code>%</code>)</h3>
+        <p><code>%</code> gives you what's <em>left over</em> after division. Useful for:</p>
+        <ul>
+            <li><strong>Checking even/odd:</strong> <code>n % 2 == 0</code> means even.</li>
+            <li><strong>Cycling through a list:</strong> <code>i % 5</code> always gives 0, 1, 2, 3, 4, 0, 1…</li>
+            <li><strong>Getting last digit:</strong> <code>n % 10</code>.</li>
+        </ul>
+        <pre><code>cout &lt;&lt; 10 % 3;   <span class="com">// 1 (because 3 goes into 10 three times, with 1 left over)</span></code></pre>
+
+        <h3>5.4 Increment and Decrement</h3>
+        <p><code>++</code> means "add 1". <code>--</code> means "subtract 1".</p>
+        <pre><code><span class="type">int</span> x = <span class="num">5</span>;
+x++;                <span class="com">// x is now 6</span>
+x++;                <span class="com">// x is now 7</span>
+x--;                <span class="com">// x is now 6</span></code></pre>
+
+        <h3>5.5 Shortcut Operators</h3>
+        <p>You'll often want to add to a variable. Two ways to do the same thing:</p>
+        <pre><code>x = x + 5;    <span class="com">// long way</span>
+x += 5;       <span class="com">// shortcut</span></code></pre>
+        <p>Same for <code>-=</code>, <code>*=</code>, <code>/=</code>, <code>%=</code>.</p>
+
+        <h3>5.6 Comparing Values</h3>
+        <table>
+            <tr><th>Operator</th><th>Asks</th><th>Example</th><th>Answer</th></tr>
+            <tr><td><code>==</code></td><td>Are they equal?</td><td><code>5 == 5</code></td><td>true</td></tr>
+            <tr><td><code>!=</code></td><td>Are they different?</td><td><code>5 != 5</code></td><td>false</td></tr>
+            <tr><td><code>&gt;</code></td><td>Greater than?</td><td><code>7 &gt; 3</code></td><td>true</td></tr>
+            <tr><td><code>&lt;</code></td><td>Less than?</td><td><code>7 &lt; 3</code></td><td>false</td></tr>
+            <tr><td><code>&gt;=</code></td><td>Greater or equal?</td><td><code>5 &gt;= 5</code></td><td>true</td></tr>
+            <tr><td><code>&lt;=</code></td><td>Less or equal?</td><td><code>5 &lt;= 3</code></td><td>false</td></tr>
+        </table>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ <code>=</code> vs <code>==</code></div>
+            <p><code>=</code> means <strong>put something in the box</strong> (assignment).</p>
+            <p><code>==</code> means <strong>are these equal?</strong> (comparison).</p>
+            <pre><code><span class="kw">if</span> (x = <span class="num">5</span>)    <span class="com">// ✗ WRONG — puts 5 into x, then x is "true"</span>
+<span class="kw">if</span> (x == <span class="num">5</span>)   <span class="com">// ✓ CORRECT — checks if x equals 5</span></code></pre>
+        </div>
+
+        <h3>5.7 Order of Operations</h3>
+        <p>Same as in math class: <code>*</code> and <code>/</code> before <code>+</code> and <code>-</code>. When in doubt, use parentheses.</p>
+        <pre><code>cout &lt;&lt; <span class="num">2</span> + <span class="num">3</span> * <span class="num">4</span>;     <span class="com">// 14 (multiplication first)</span>
+cout &lt;&lt; (<span class="num">2</span> + <span class="num">3</span>) * <span class="num">4</span>;   <span class="com">// 20 (parentheses first)</span></code></pre>
+
+        <!-- ============================================================ -->
+        <h2 id="strings">6. Text (Strings)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">📝 Picture this</div>
+            <p>A <strong>string</strong> is a chain of characters — like a train where each car holds one letter. In C++ you write strings inside double quotes: <code>"Hello"</code>.</p>
+        </div>
+
+        <h3>6.1 Making and Using a String</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;string&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">string</span> greeting = <span class="str">"Hello"</span>;
+cout &lt;&lt; greeting;   <span class="com">// prints Hello</span></code></pre>
+
+        <h3>6.2 Joining Strings Together</h3>
+        <p>Use <code>+</code> to glue strings:</p>
+        <pre><code><span class="type">string</span> first = <span class="str">"John"</span>;
+<span class="type">string</span> last  = <span class="str">"Smith"</span>;
+<span class="type">string</span> full  = first + <span class="str">" "</span> + last;
+cout &lt;&lt; full;     <span class="com">// prints John Smith</span></code></pre>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Number + String = error</div>
+            <pre><code><span class="type">string</span> name = <span class="str">"Age: "</span>;
+<span class="type">int</span>    age  = <span class="num">25</span>;
+cout &lt;&lt; name + age;    <span class="com">// ✗ ERROR</span></code></pre>
+            <p>You can't add text and numbers directly. Convert the number to text first:</p>
+            <pre><code>cout &lt;&lt; name + <span class="fn">to_string</span>(age);   <span class="com">// ✓ works</span></code></pre>
+        </div>
+
+        <h3>6.3 Length of a String</h3>
+        <pre><code><span class="type">string</span> word = <span class="str">"Hello"</span>;
+cout &lt;&lt; word.<span class="fn">length</span>();   <span class="com">// 5</span>
+cout &lt;&lt; word.<span class="fn">size</span>();     <span class="com">// 5 (same thing)</span></code></pre>
+
+        <h3>6.4 Looking at One Letter</h3>
+        <p>Strings are <strong>numbered starting at 0</strong>. So the first character is <code>[0]</code>.</p>
+        <pre><code><span class="type">string</span> word = <span class="str">"Hello"</span>;
+<span class="com">//                01234</span>
+cout &lt;&lt; word[<span class="num">0</span>];   <span class="com">// H</span>
+cout &lt;&lt; word[<span class="num">1</span>];   <span class="com">// e</span>
+cout &lt;&lt; word[<span class="num">4</span>];   <span class="com">// o</span></code></pre>
+
+        <h3>6.5 Changing a Letter</h3>
+        <pre><code><span class="type">string</span> word = <span class="str">"Hello"</span>;
+word[<span class="num">0</span>] = <span class="str">'J'</span>;
+cout &lt;&lt; word;   <span class="com">// Jello</span></code></pre>
+
+        <div class="callout tip">
+            <div class="callout-title">💡 Safety note</div>
+            <p>Asking for <code>word[100]</code> on a 5-letter string won't crash — it'll just read junk (undefined behavior). Use <code>word.at(100)</code> instead, which will throw a clear error.</p>
+        </div>
+
+        <h3>6.6 Reading Text With Spaces</h3>
+        <p>We covered this in Section 4 — remember: <code>cin &gt;&gt;</code> stops at spaces. Use <code>getline(cin, name)</code> to read a whole sentence.</p>
+
+        <!-- ============================================================ -->
+        <h2 id="booleans">7. Making Decisions (if / else)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🚦 Picture this</div>
+            <p>You make decisions all day: <em>"If it's raining, I'll take an umbrella. Otherwise, I won't."</em> That's exactly what <code>if</code> and <code>else</code> do in code.</p>
+        </div>
+
+        <h3>7.1 Basic <code>if</code></h3>
+        <pre><code><span class="type">int</span> age = <span class="num">20</span>;
+
+<span class="kw">if</span> (age &gt;= <span class="num">18</span>) {
+    cout &lt;&lt; <span class="str">"You can vote.\n"</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>You can vote.</div>
+
+        <div class="line-explain">
+            <p><b><code>if</code></b> — "Check this question."</p>
+            <p><b><code>(age &gt;= 18)</code></b> — "Is age at least 18?"</p>
+            <p><b><code>{ ... }</code></b> — "If yes, do everything inside the curly braces."</p>
+            <p>If the answer is no, the whole block gets skipped.</p>
+        </div>
+
+        <h3>7.2 <code>if</code> + <code>else</code></h3>
+        <pre><code><span class="type">int</span> age = <span class="num">15</span>;
+
+<span class="kw">if</span> (age &gt;= <span class="num">18</span>) {
+    cout &lt;&lt; <span class="str">"You can vote.\n"</span>;
+} <span class="kw">else</span> {
+    cout &lt;&lt; <span class="str">"You are too young.\n"</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>You are too young.</div>
+
+        <p>"If yes → do the first block. Otherwise → do the else block." <strong>Exactly one of the two runs, never both.</strong></p>
+
+        <h3>7.3 <code>else if</code> — More Than Two Choices</h3>
+        <pre><code><span class="type">int</span> score = <span class="num">85</span>;
+
+<span class="kw">if</span> (score &gt;= <span class="num">90</span>) {
+    cout &lt;&lt; <span class="str">"Grade A\n"</span>;
+} <span class="kw">else if</span> (score &gt;= <span class="num">80</span>) {
+    cout &lt;&lt; <span class="str">"Grade B\n"</span>;
+} <span class="kw">else if</span> (score &gt;= <span class="num">70</span>) {
+    cout &lt;&lt; <span class="str">"Grade C\n"</span>;
+} <span class="kw">else</span> {
+    cout &lt;&lt; <span class="str">"Grade F\n"</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Grade B</div>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Order matters!</div>
+            <p>The computer checks each condition in order and stops at the first one that's true. If you checked <code>score &gt;= 70</code> first, then a score of 95 would get "Grade C" — and "Grade A" would never be reached.</p>
+            <p><strong>Rule:</strong> check from most restrictive to least.</p>
+        </div>
+
+        <h3>7.4 The Short Way: <code>?:</code></h3>
+        <p>For simple "if this, then X, else Y", there's a one-line version:</p>
+        <pre><code><span class="type">string</span> result = (age &gt;= <span class="num">18</span>) ? <span class="str">"adult"</span> : <span class="str">"minor"</span>;</code></pre>
+        <p>Read it as: <em>"If age ≥ 18, then 'adult', else 'minor'."</em></p>
+
+        <h3>7.5 Combining Conditions</h3>
+        <p><code>&amp;&amp;</code> = "and" (both must be true).<br>
+           <code>||</code> = "or" (at least one must be true).<br>
+           <code>!</code> = "not" (reverse the answer).</p>
+
+        <pre><code><span class="kw">if</span> (age &gt;= <span class="num">18</span> &amp;&amp; hasID) {
+    cout &lt;&lt; <span class="str">"You can enter.\n"</span>;
+}
+<span class="kw">if</span> (day == <span class="str">"Sat"</span> || day == <span class="str">"Sun"</span>) {
+    cout &lt;&lt; <span class="str">"It's the weekend!\n"</span>;
+}</code></pre>
+
+        <h3>7.6 A Real Example — Voting With ID</h3>
+        <pre><code><span class="type">int</span> age = <span class="num">20</span>;
+<span class="type">bool</span> hasID = <span class="kw">true</span>;
+
+<span class="kw">if</span> (age &gt;= <span class="num">18</span>) {
+    <span class="kw">if</span> (hasID) {
+        cout &lt;&lt; <span class="str">"You can vote.\n"</span>;
+    } <span class="kw">else</span> {
+        cout &lt;&lt; <span class="str">"You need ID.\n"</span>;
+    }
+} <span class="kw">else</span> {
+    cout &lt;&lt; <span class="str">"You are too young.\n"</span>;
+}</code></pre>
+
+        <!-- ============================================================ -->
+        <h2 id="switch">8. Menu Choices (switch)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🍔 Picture this</div>
+            <p>At a fast-food counter, you say a number: "Number 1, please." The cashier looks up the menu: 1 = burger, 2 = chicken, 3 = salad. That's exactly what <code>switch</code> does — it picks one option from a list.</p>
+        </div>
+
+        <h3>8.1 The Basic Form</h3>
+        <pre><code><span class="type">int</span> choice = <span class="num">2</span>;
+
+<span class="kw">switch</span> (choice) {
+    <span class="kw">case</span> <span class="num">1</span>:
+        cout &lt;&lt; <span class="str">"You ordered a burger.\n"</span>;
+        <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">2</span>:
+        cout &lt;&lt; <span class="str">"You ordered chicken.\n"</span>;
+        <span class="kw">break</span>;
+    <span class="kw">case</span> <span class="num">3</span>:
+        cout &lt;&lt; <span class="str">"You ordered salad.\n"</span>;
+        <span class="kw">break</span>;
+    <span class="kw">default</span>:
+        cout &lt;&lt; <span class="str">"That's not on the menu.\n"</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>You ordered chicken.</div>
+
+        <div class="line-explain">
+            <p><b><code>switch (choice)</code></b> — "Look at the value of choice."</p>
+            <p><b><code>case 1:</code></b> — "If it's 1, do this."</p>
+            <p><b><code>break;</code></b> — "Stop here. Don't keep checking other cases."</p>
+            <p><b><code>default:</code></b> — "If nothing matched, do this." (Optional but good.)</p>
+        </div>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Don't forget <code>break</code>!</div>
+            <p>Without <code>break</code>, the computer keeps running the next case too. This is called <strong>fall-through</strong> and it's usually a bug.</p>
+            <pre><code><span class="kw">case</span> <span class="num">1</span>:
+    cout &lt;&lt; <span class="str">"one "</span>;
+    <span class="com">// no break here</span>
+<span class="kw">case</span> <span class="num">2</span>:
+    cout &lt;&lt; <span class="str">"two "</span>;
+    <span class="kw">break</span>;</code></pre>
+            <p>If <code>choice == 1</code>, you'd see "one two". Usually not what you want.</p>
+        </div>
+
+        <h3>8.2 When to Use <code>switch</code> vs <code>if/else</code></h3>
+        <table>
+            <tr><th>Use <code>switch</code> when…</th><th>Use <code>if/else</code> when…</th></tr>
+            <tr><td>Comparing one value to exact numbers/letters</td><td>Comparing with <code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code></td></tr>
+            <tr><td>Building a menu</td><td>Combining conditions with <code>&amp;&amp;</code> or <code>||</code></td></tr>
+            <tr><td>Checking against several specific options</td><td>Complex logic</td></tr>
+        </table>
+
+        <!-- ============================================================ -->
+        <h2 id="loops">9. Repeating Things (Loops)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🔁 Picture this</div>
+            <p>If a recipe says "stir 20 times", you don't write "stir" 20 times on paper — you write it once and mark "repeat 20 times". A <strong>loop</strong> is the same idea: do this block of code again and again.</p>
+        </div>
+
+        <h3>9.1 The <code>while</code> Loop — "Keep Going While…"</h3>
+        <pre><code><span class="type">int</span> i = <span class="num">1</span>;
+
+<span class="kw">while</span> (i &lt;= <span class="num">5</span>) {
+    cout &lt;&lt; i &lt;&lt; <span class="str">" "</span>;
+    i++;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>1 2 3 4 5</div>
+
+        <div class="line-explain">
+            <p><b>"Set i to 1."</b></p>
+            <p><b>"While i is ≤ 5, do the block."</b></p>
+            <p><b>Block:</b> print i, then add 1 to i.</p>
+            <p>Once i becomes 6, the condition is false and the loop stops.</p>
+        </div>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Don't forget <code>i++</code>!</div>
+            <p>If you remove <code>i++</code>, <code>i</code> stays at 1 forever. The condition is always true. The program runs forever — an <strong>infinite loop</strong>. You'll have to force-quit the program.</p>
+        </div>
+
+        <h3>9.2 The <code>for</code> Loop — "Repeat N Times"</h3>
+        <p>When you know how many times to repeat, <code>for</code> is cleaner:</p>
+
+        <pre><code><span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">5</span>; i++) {
+    cout &lt;&lt; i &lt;&lt; <span class="str">" "</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>1 2 3 4 5</div>
+
+        <div class="line-explain">
+            <p><code>for (start; condition; step)</code> — three parts in one line.</p>
+            <p><b>start:</b> <code>int i = 1;</code> — happens once at the beginning.</p>
+            <p><b>condition:</b> <code>i &lt;= 5</code> — checked before each pass; stop when false.</p>
+            <p><b>step:</b> <code>i++</code> — happens after each pass.</p>
+        </div>
+
+        <h3>9.3 The <code>do-while</code> Loop — "Do It Once, Then Check"</h3>
+        <p>This loop always runs at least once, then asks "should I run again?"</p>
+
+        <pre><code><span class="type">int</span> i = <span class="num">10</span>;
+<span class="kw">do</span> {
+    cout &lt;&lt; <span class="str">"Ran once!\n"</span>;
+} <span class="kw">while</span> (i &lt; <span class="num">5</span>);   <span class="com">// condition is false, but it still ran once</span></code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Ran once!</div>
+
+        <div class="callout tip">
+            <div class="callout-title">💡 When to use <code>do-while</code>?</div>
+            <p>When you want to run something at least once no matter what — like showing a menu before asking the user if they want to quit.</p>
+        </div>
+
+        <h3>9.4 The Range-Based <code>for</code> — "For Each Item in the List"</h3>
+        <p>Super clean way to walk through an array or vector:</p>
+        <pre><code><span class="type">int</span> numbers[<span class="num">3</span>] = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>};
+
+<span class="kw">for</span> (<span class="type">int</span> n : numbers) {
+    cout &lt;&lt; n &lt;&lt; <span class="str">" "</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>10 20 30</div>
+
+        <p>Read as: "For each <code>int n</code> in <code>numbers</code>, print n."</p>
+
+        <h3>9.5 Stopping a Loop Early</h3>
+        <ul>
+            <li><code>break;</code> — leave the loop immediately.</li>
+            <li><code>continue;</code> — skip the rest of this pass, jump to the next one.</li>
+        </ul>
+
+        <pre><code><span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">10</span>; i++) {
+    <span class="kw">if</span> (i == <span class="num">5</span>) <span class="kw">break</span>;       <span class="com">// stop when i reaches 5</span>
+    cout &lt;&lt; i &lt;&lt; <span class="str">" "</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>1 2 3 4</div>
+
+        <pre><code><span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">5</span>; i++) {
+    <span class="kw">if</span> (i == <span class="num">3</span>) <span class="kw">continue</span>;    <span class="com">// skip 3</span>
+    cout &lt;&lt; i &lt;&lt; <span class="str">" "</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>1 2 4 5</div>
+
+        <h3>9.6 Nested Loops — Loops Inside Loops</h3>
+        <p>Imagine a clock. The minute hand goes around 60 times while the hour hand moves once. That's a loop inside a loop.</p>
+
+        <pre><code><span class="kw">for</span> (<span class="type">int</span> row = <span class="num">1</span>; row &lt;= <span class="num">3</span>; row++) {
+    <span class="kw">for</span> (<span class="type">int</span> col = <span class="num">1</span>; col &lt;= <span class="num">3</span>; col++) {
+        cout &lt;&lt; row * col &lt;&lt; <span class="str">" "</span>;
+    }
+    cout &lt;&lt; <span class="str">"\n"</span>;
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>1 2 3
+2 4 6
+3 6 9</div>
+
+        <!-- ============================================================ -->
+        <h2 id="arrays">10. Lists of Things (Arrays &amp; Vectors)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">📦 Picture this</div>
+            <p>You don't keep 30 separate jars for your coins — you keep one jar full of coins. Similarly, an <strong>array</strong> (or its flexible cousin, a <strong>vector</strong>) is a numbered row of boxes all holding the same type of thing.</p>
+        </div>
+
+        <h3>10.1 Making an Array</h3>
+        <pre><code><span class="type">int</span> scores[<span class="num">5</span>] = {<span class="num">90</span>, <span class="num">85</span>, <span class="num">77</span>, <span class="num">92</span>, <span class="num">88</span>};</code></pre>
+
+        <div class="line-explain">
+            <p><b><code>int scores[5]</code></b> — "Make 5 boxes of type int, all with one name: scores."</p>
+            <p><b><code>= {90, 85, ...}</code></b> — "Put these values inside."</p>
+        </div>
+
+        <h3>10.2 Accessing Items by Number</h3>
+        <p>Like strings, arrays are numbered <strong>starting at 0</strong>.</p>
+        <pre><code><span class="type">int</span> scores[<span class="num">5</span>] = {<span class="num">90</span>, <span class="num">85</span>, <span class="num">77</span>, <span class="num">92</span>, <span class="num">88</span>};
+<span class="com">//                   0     1     2     3     4</span>
+
+cout &lt;&lt; scores[<span class="num">0</span>];   <span class="com">// 90</span>
+cout &lt;&lt; scores[<span class="num">4</span>];   <span class="com">// 88</span></code></pre>
+
+        <h3>10.3 Changing an Item</h3>
+        <pre><code>scores[<span class="num">0</span>] = <span class="num">100</span>;   <span class="com">// now the first is 100</span></code></pre>
+
+        <h3>10.4 Looping Over an Array</h3>
+        <pre><code><span class="type">int</span> scores[<span class="num">5</span>] = {<span class="num">90</span>, <span class="num">85</span>, <span class="num">77</span>, <span class="num">92</span>, <span class="num">88</span>};
+
+<span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++) {
+    cout &lt;&lt; scores[i] &lt;&lt; <span class="str">"\n"</span>;
+}</code></pre>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Never go past the end!</div>
+            <p>If an array has 5 items (indexes 0–4), <code>scores[5]</code> or <code>scores[100]</code> is <strong>undefined behavior</strong> — reading or writing garbage. C++ won't warn you, and it might crash your program or corrupt other data.</p>
+            <p>This kind of bug has caused serious security holes in real software. Always check your bounds.</p>
+        </div>
+
+        <h3>10.5 Vectors — Arrays That Grow</h3>
+        <p>A <strong>vector</strong> is like an array that can grow or shrink. Most modern C++ code uses vectors instead of raw arrays because they're safer and more flexible.</p>
+
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;vector&gt;</span>
+
+vector&lt;<span class="type">int</span>&gt; scores = {<span class="num">90</span>, <span class="num">85</span>, <span class="num">77</span>};
+
+scores.<span class="fn">push_back</span>(<span class="num">100</span>);   <span class="com">// add to the end</span>
+scores.<span class="fn">pop_back</span>();     <span class="com">// remove the last one</span>
+
+cout &lt;&lt; scores.<span class="fn">size</span>();    <span class="com">// 3</span>
+cout &lt;&lt; scores[<span class="num">0</span>];       <span class="com">// 90</span></code></pre>
+
+        <table>
+            <tr><th>Array</th><th>Vector</th></tr>
+            <tr><td>Fixed size — declared once, never changes</td><td>Grows automatically</td></tr>
+            <tr><td>Faster (no management cost)</td><td>Slightly slower, much more flexible</td></tr>
+            <tr><td>Recommended for beginners? No</td><td><strong>Yes — use this by default</strong></td></tr>
+        </table>
+
+        <h3>10.6 Looping Over a Vector</h3>
+        <pre><code><span class="kw">for</span> (<span class="type">int</span> n : scores) {
+    cout &lt;&lt; n &lt;&lt; <span class="str">" "</span>;
+}</code></pre>
+
+        <!-- ============================================================ -->
+        <h2 id="functions">11. Reusable Recipes (Functions)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🍳 Picture this</div>
+            <p>Imagine writing out the full steps to make coffee every single morning — over and over. Pointless. Instead, you write it once on a recipe card called "makeCoffee". Each morning you just say "make coffee".</p>
+            <p>A <strong>function</strong> is a recipe card for your code. You write the steps once, give it a name, and then just use the name whenever you need it.</p>
+        </div>
+
+        <h3>11.1 Making a Function</h3>
+        <pre><code><span class="type">int</span> <span class="fn">add</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+    <span class="kw">return</span> a + b;
+}</code></pre>
+
+        <div class="line-explain">
+            <p><b><code>int</code></b> — "This function will give back a whole number." (The <em>return type</em>.)</p>
+            <p><b><code>add</code></b> — "The function's name."</p>
+            <p><b><code>(int a, int b)</code></b> — "It needs two whole numbers to do its job." (These are the <em>parameters</em>.)</p>
+            <p><b><code>return a + b;</code></b> — "The answer is a + b. Hand it back to whoever called me."</p>
+        </div>
+
+        <h3>11.2 Using (Calling) the Function</h3>
+        <pre><code><span class="type">int</span> result = <span class="fn">add</span>(<span class="num">3</span>, <span class="num">4</span>);
+cout &lt;&lt; result;   <span class="com">// 7</span></code></pre>
+
+        <p>"Hey <code>add</code>, here's 3 and 4 — do your thing." The function returns 7, and we store it in <code>result</code>.</p>
+
+        <h3>11.3 A Function That Doesn't Return Anything</h3>
+        <p>Some functions just <em>do</em> something (print, save) without giving a value back. Use <code>void</code>:</p>
+        <pre><code><span class="type">void</span> <span class="fn">greet</span>(<span class="type">string</span> name) {
+    cout &lt;&lt; <span class="str">"Hello, "</span> &lt;&lt; name &lt;&lt; <span class="str">"!\n"</span>;
+}
+
+<span class="fn">greet</span>(<span class="str">"Alice"</span>);   <span class="com">// Hello, Alice!</span></code></pre>
+
+        <h3>11.4 Pass by Value vs Pass by Reference</h3>
+
+        <div class="callout story">
+            <div class="callout-title">📄 Picture this</div>
+            <p>You have a document. You can either:</p>
+            <ul>
+                <li><strong>Hand over a photocopy</strong> — the other person can scribble on it, but your original is untouched.</li>
+                <li><strong>Hand over the original</strong> — whatever they write goes straight onto your document.</li>
+            </ul>
+            <p>These are the two ways to pass values to functions.</p>
+        </div>
+
+        <pre><code><span class="type">void</span> <span class="fn">writeOnCopy</span>(<span class="type">int</span> x)  { x = <span class="num">999</span>; }    <span class="com">// copy</span>
+<span class="type">void</span> <span class="fn">writeOriginal</span>(<span class="type">int</span>&amp; x) { x = <span class="num">999</span>; }    <span class="com">// original (&amp;)</span>
+
+<span class="type">int</span> score = <span class="num">10</span>;
+<span class="fn">writeOnCopy</span>(score);   <span class="com">// score is still 10</span>
+<span class="fn">writeOriginal</span>(score); <span class="com">// score is now 999</span></code></pre>
+
+        <p>The <code>&amp;</code> means "reference" — pass the original, not a copy.</p>
+
+        <h3>11.5 Why Functions Are Great</h3>
+        <ul>
+            <li><strong>Write once, use many times.</strong></li>
+            <li><strong>Easier to read</strong> — <code>calculateTax(price)</code> is clearer than 10 lines of math.</li>
+            <li><strong>Easier to fix</strong> — change the recipe in one place, everything updates.</li>
+        </ul>
+
+        <h3>11.6 A Complete Example</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="type">int</span> <span class="fn">square</span>(<span class="type">int</span> x) { <span class="kw">return</span> x * x; }
+<span class="type">int</span> <span class="fn">cube</span>(<span class="type">int</span> x)   { <span class="kw">return</span> x * x * x; }
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="kw">for</span> (<span class="type">int</span> i = <span class="num">1</span>; i &lt;= <span class="num">5</span>; i++) {
+        cout &lt;&lt; i &lt;&lt; <span class="str">" squared: "</span> &lt;&lt; <span class="fn">square</span>(i)
+             &lt;&lt; <span class="str">", cubed: "</span>  &lt;&lt; <span class="fn">cube</span>(i) &lt;&lt; <span class="str">"\n"</span>;
+    }
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>1 squared: 1, cubed: 1
+2 squared: 4, cubed: 8
+3 squared: 9, cubed: 27
+4 squared: 16, cubed: 64
+5 squared: 25, cubed: 125</div>
+
+        <h3>11.7 Recursion — A Function That Calls Itself</h3>
+        <p>Sometimes a problem is naturally self-similar. Factorial of 5 is <code>5 × 4 × 3 × 2 × 1</code>. Notice: <code>factorial(5) = 5 × factorial(4)</code>.</p>
+
+        <pre><code><span class="type">int</span> <span class="fn">factorial</span>(<span class="type">int</span> n) {
+    <span class="kw">if</span> (n == <span class="num">1</span>) <span class="kw">return</span> <span class="num">1</span>;      <span class="com">// base case — STOP calling</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="num">1</span>);    <span class="com">// recursive step</span>
+}
+
+cout &lt;&lt; <span class="fn">factorial</span>(<span class="num">5</span>);   <span class="com">// 120</span></code></pre>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Every recursion needs a base case</div>
+            <p>If the function never stops calling itself, the computer runs out of memory and crashes (stack overflow). The base case tells it when to stop.</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="pointers">12. Addresses (Pointers)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🏠 Picture this</div>
+            <p>Your friend asks where you live. You could:</p>
+            <ul>
+                <li>Give them your whole house (impractical), or</li>
+                <li>Give them your <strong>address</strong> — a note saying "go to 123 Main St".</li>
+            </ul>
+            <p>A <strong>pointer</strong> is like that address note. It doesn't hold the value itself — it holds the <em>location</em> of the value. Just like a note in your pocket saying "the sugar is on shelf 3".</p>
+        </div>
+
+        <h3>12.1 Getting an Address</h3>
+        <p>Every variable lives somewhere in memory. You can find out where using <code>&amp;</code>:</p>
+        <pre><code><span class="type">int</span> age = <span class="num">25</span>;
+cout &lt;&lt; &amp;age;   <span class="com">// prints something like 0x7ffe5d</span></code></pre>
+
+        <h3>12.2 Storing an Address in a Pointer</h3>
+        <pre><code><span class="type">int</span> age = <span class="num">25</span>;
+<span class="type">int</span> *p = &amp;age;    <span class="com">// p holds the address of age</span></code></pre>
+
+        <div class="line-explain">
+            <p><b><code>int*</code></b> — "p is a pointer to an int." (The <code>*</code> is part of the type.)</p>
+            <p><b><code>&amp;age</code></b> — "The address of age."</p>
+        </div>
+
+        <h3>12.3 Reading the Value Through the Pointer</h3>
+        <pre><code>cout &lt;&lt; *p;   <span class="com">// prints 25</span></code></pre>
+        <p>The <code>*</code> here means <em>"go to the address and give me what's there"</em>. This is called <strong>dereferencing</strong>.</p>
+
+        <h3>12.4 Changing a Value Through a Pointer</h3>
+        <pre><code>*p = <span class="num">30</span>;
+cout &lt;&lt; age;   <span class="com">// now prints 30</span></code></pre>
+
+        <h3>12.5 References — The Nicer Alternative</h3>
+        <p>A <strong>reference</strong> is like a second name for the same variable. Easier than pointers for most cases.</p>
+        <pre><code><span class="type">int</span> age = <span class="num">25</span>;
+<span class="type">int</span> &amp;alias = age;   <span class="com">// alias IS age, same box</span>
+
+alias = <span class="num">30</span>;
+cout &lt;&lt; age;         <span class="com">// 30</span></code></pre>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ For beginners: don't overuse pointers</div>
+            <p>Pointers are powerful but easy to misuse. For now, the golden rule is:</p>
+            <ul>
+                <li>Use <code>std::vector</code> instead of raw arrays.</li>
+                <li>Use references (<code>&amp;</code>) instead of pointers for function parameters.</li>
+                <li>Never write <code>new</code> or <code>delete</code> unless you must — use <code>std::make_unique</code> instead.</li>
+            </ul>
+        </div>
+
+        <h3>12.6 Smart Pointers — The Safe Way</h3>
+        <p>Modern C++ gives you "smart pointers" that clean up their memory automatically, so you can never forget.</p>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;memory&gt;</span>
+
+{
+    <span class="kw">auto</span> p = std::make_unique&lt;<span class="type">int</span>&gt;(<span class="num">42</span>);
+    cout &lt;&lt; *p &lt;&lt; <span class="str">"\n"</span>;   <span class="com">// 42</span>
+}   <span class="com">// memory freed automatically here</span></code></pre>
+
+        <!-- ============================================================ -->
+        <h2 id="oop">13. Blueprints (Object-Oriented Programming)</h2>
+
+        <div class="callout story">
+            <div class="callout-title">🍪 Picture this</div>
+            <p>A <strong>cookie cutter</strong> is just a shape — it's not a cookie. But you can make many cookies with it. In C++:</p>
+            <ul>
+                <li><strong>Class</strong> = the cookie cutter (the blueprint).</li>
+                <li><strong>Object</strong> = an actual cookie made from the cutter.</li>
+            </ul>
+            <p>Writing <code>class Car { ... }</code> doesn't make a car — it makes a <em>template</em> for cars. You actually build one with <code>Car myCar;</code>.</p>
+        </div>
+
+        <h3>13.1 Your First Class</h3>
+        <pre><code><span class="kw">class</span> <span class="fn">Rectangle</span> {
+<span class="kw">public</span>:
+    <span class="type">int</span> width;
+    <span class="type">int</span> height;
+
+    <span class="type">int</span> <span class="fn">area</span>() {
+        <span class="kw">return</span> width * height;
+    }
+};
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    Rectangle r;
+    r.width = <span class="num">5</span>;
+    r.height = <span class="num">3</span>;
+    cout &lt;&lt; r.<span class="fn">area</span>();   <span class="com">// 15</span>
+}</code></pre>
+
+        <div class="line-explain">
+            <p><b><code>class Rectangle { ... };</code></b> — "Make a blueprint for rectangles." (Note the semicolon at the end!)</p>
+            <p><b><code>public:</code></b> — "These parts can be used outside the class."</p>
+            <p><b><code>int width;</code></b> — "Every rectangle has a width."</p>
+            <p><b><code>int area() { ... }</code></b> — "Every rectangle can calculate its area."</p>
+            <p><b><code>Rectangle r;</code></b> — "Make an actual rectangle and call it r."</p>
+            <p><b><code>r.width = 5;</code></b> — "Use a dot to access the box inside the object."</p>
+        </div>
+
+        <h3>13.2 Public vs Private</h3>
+        <table>
+            <tr><th>Keyword</th><th>Who can use it</th></tr>
+            <tr><td><code>public</code></td><td>Anyone (from outside the class)</td></tr>
+            <tr><td><code>private</code></td><td>Only the class itself</td></tr>
+            <tr><td><code>protected</code></td><td>This class + classes that inherit from it</td></tr>
+        </table>
+
+        <p><strong>Best practice:</strong> make data <code>private</code> and provide <code>public</code> functions to read/change it safely. This is called <strong>encapsulation</strong>.</p>
+
+        <h3>13.3 Constructors — Running Code at Creation</h3>
+        <p>A <strong>constructor</strong> is a special function that runs automatically when you create an object. It's for setting up the object's starting state.</p>
+
+        <pre><code><span class="kw">class</span> <span class="fn">Rectangle</span> {
+<span class="kw">public</span>:
+    <span class="type">int</span> width, height;
+
+    <span class="fn">Rectangle</span>(<span class="type">int</span> w, <span class="type">int</span> h) {   <span class="com">// constructor</span>
+        width = w;
+        height = h;
+    }
+
+    <span class="type">int</span> <span class="fn">area</span>() { <span class="kw">return</span> width * height; }
+};
+
+Rectangle r(<span class="num">5</span>, <span class="num">3</span>);   <span class="com">// constructor runs, r is ready to use</span>
+cout &lt;&lt; r.<span class="fn">area</span>();    <span class="com">// 15</span></code></pre>
+
+        <h3>13.4 Destructors — Cleaning Up</h3>
+        <p>A <strong>destructor</strong> runs automatically when an object is destroyed. Use it to free resources (close a file, release memory). It has the same name as the class, prefixed with <code>~</code>.</p>
+
+        <pre><code><span class="kw">class</span> <span class="fn">File</span> {
+<span class="kw">public</span>:
+    <span class="fn">File</span>()  { cout &lt;&lt; <span class="str">"File opened\n"</span>; }
+    ~<span class="fn">File</span>() { cout &lt;&lt; <span class="str">"File closed\n"</span>; }
+};</code></pre>
+
+        <p>This auto-cleanup pattern is called <strong>RAII</strong> — one of C++'s most important ideas. You don't have to remember to close anything; the destructor does it.</p>
+
+        <h3>13.5 Inheritance — Building on Another Class</h3>
+        <p>If you have a "Vehicle" class, then "Car" and "Bike" are both vehicles. Inheritance lets them share code.</p>
+
+        <pre><code><span class="kw">class</span> <span class="fn">Animal</span> {
+<span class="kw">public</span>:
+    <span class="type">void</span> <span class="fn">eat</span>() { cout &lt;&lt; <span class="str">"Eating...\n"</span>; }
+};
+
+<span class="kw">class</span> <span class="fn">Dog</span> : <span class="kw">public</span> Animal {
+<span class="kw">public</span>:
+    <span class="type">void</span> <span class="fn">bark</span>() { cout &lt;&lt; <span class="str">"Woof!\n"</span>; }
+};
+
+Dog d;
+d.<span class="fn">eat</span>();    <span class="com">// inherited from Animal</span>
+d.<span class="fn">bark</span>();   <span class="com">// Dog's own</span></code></pre>
+
+        <p>Read <code>class Dog : public Animal</code> as "<strong>Dog is a kind of Animal.</strong>" Dog gets everything Animal has, plus its own stuff.</p>
+
+        <h3>13.6 A Complete Class Example — Bank Account</h3>
+        <pre><code><span class="kw">class</span> <span class="fn">BankAccount</span> {
+<span class="kw">private</span>:
+    <span class="type">string</span> owner;
+    <span class="type">double</span> balance;
+
+<span class="kw">public</span>:
+    <span class="fn">BankAccount</span>(<span class="type">string</span> name, <span class="type">double</span> start) {
+        owner = name;
+        balance = start;
+    }
+
+    <span class="type">void</span> <span class="fn">deposit</span>(<span class="type">double</span> amount) {
+        <span class="kw">if</span> (amount &lt;= <span class="num">0</span>) {
+            cout &lt;&lt; <span class="str">"Invalid deposit.\n"</span>;
+            <span class="kw">return</span>;
+        }
+        balance += amount;
+    }
+
+    <span class="type">void</span> <span class="fn">show</span>() <span class="kw">const</span> {
+        cout &lt;&lt; owner &lt;&lt; <span class="str">" has $"</span> &lt;&lt; balance &lt;&lt; <span class="str">"\n"</span>;
+    }
+};
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    BankAccount acc(<span class="str">"Alice"</span>, <span class="num">100.0</span>);
+    acc.<span class="fn">deposit</span>(<span class="num">50.0</span>);
+    acc.<span class="fn">show</span>();      <span class="com">// Alice has $150</span>
+}</code></pre>
+
+        <!-- ============================================================ -->
+        <h2 id="modern">14. Modern C++ — The Nice Additions</h2>
+
+        <h3>14.1 <code>auto</code> — Let the Compiler Guess</h3>
+        <p>You don't always have to spell out the type. Let C++ figure it out:</p>
+        <pre><code><span class="kw">auto</span> x = <span class="num">5</span>;              <span class="com">// int</span>
+<span class="kw">auto</span> y = <span class="num">3.14</span>;           <span class="com">// double</span>
+<span class="kw">auto</span> s = <span class="str">"hello"</span>;        <span class="com">// const char*</span>
+<span class="kw">auto</span> b = <span class="kw">true</span>;             <span class="com">// bool</span></code></pre>
+
+        <p>Convenient for complicated types. For simple ones, writing the type is often clearer.</p>
+
+        <h3>14.2 <code>enum class</code> — Named Choices</h3>
+        <p>Instead of using strings or numbers for states, use a small set of named values:</p>
+        <pre><code><span class="kw">enum class</span> Color { Red, Green, Blue };
+
+Color c = Color::Red;
+<span class="kw">if</span> (c == Color::Red) cout &lt;&lt; <span class="str">"Red!\n"</span>;</code></pre>
+
+        <h3>14.3 Lambdas — Tiny Inline Functions</h3>
+        <p>For quick one-off functions, C++ lets you write it right where you use it:</p>
+        <pre><code><span class="kw">auto</span> square = [](<span class="type">int</span> x) { <span class="kw">return</span> x * x; };
+cout &lt;&lt; <span class="fn">square</span>(<span class="num">5</span>);   <span class="com">// 25</span></code></pre>
+
+        <h3>14.4 Range-Based <code>for</code> — Already Seen</h3>
+        <p>Your best friend for iterating:</p>
+        <pre><code><span class="kw">for</span> (<span class="type">int</span> n : numbers) { <span class="kw">/* do something with n */</span> }</code></pre>
+
+        <h3>14.5 <code>constexpr</code> — Compute at Compile Time</h3>
+        <p>If a value can be known when you compile the program, why wait until it runs?</p>
+        <pre><code><span class="kw">constexpr</span> <span class="type">int</span> SIZE = <span class="num">10</span>;
+<span class="type">int</span> arr[SIZE];   <span class="com">// valid — compiler knows the size</span></code></pre>
+
+        <!-- ============================================================ -->
+        <h2 id="files">15. Files &amp; Errors</h2>
+
+        <h3>15.1 Throwing and Catching Errors</h3>
+
+        <div class="callout story">
+            <div class="callout-title">🚨 Picture this</div>
+            <p>An <strong>exception</strong> is like a fire alarm. When something goes wrong, the program "raises the alarm". A <code>try/catch</code> is your fire department, ready to handle it. If nobody catches it, the program crashes.</p>
+        </div>
+
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;stdexcept&gt;</span>
+
+<span class="type">double</span> <span class="fn">divide</span>(<span class="type">double</span> a, <span class="type">double</span> b) {
+    <span class="kw">if</span> (b == <span class="num">0</span>) <span class="kw">throw</span> std::invalid_argument(<span class="str">"Cannot divide by zero"</span>);
+    <span class="kw">return</span> a / b;
+}
+
+<span class="type">int</span> <span class="fn">main</span>() {
+    <span class="kw">try</span> {
+        cout &lt;&lt; <span class="fn">divide</span>(<span class="num">10</span>, <span class="num">0</span>) &lt;&lt; <span class="str">"\n"</span>;
+    }
+    <span class="kw">catch</span> (<span class="kw">const</span> std::invalid_argument&amp; e) {
+        cout &lt;&lt; <span class="str">"Error: "</span> &lt;&lt; e.<span class="fn">what</span>() &lt;&lt; <span class="str">"\n"</span>;
+    }
+}</code></pre>
+        <div class="output-block">
+            <div class="output-title">Output</div>Error: Cannot divide by zero</div>
+
+        <h3>15.2 Writing to a File</h3>
+        <pre><code><span class="pp">#include</span> <span class="str">&lt;fstream&gt;</span>
+
+ofstream out(<span class="str">"notes.txt"</span>);
+<span class="kw">if</span> (!out) {
+    cout &lt;&lt; <span class="str">"Could not open file!\n"</span>;
+    <span class="kw">return</span> <span class="num">1</span>;
+}
+out &lt;&lt; <span class="str">"Hello, file!\n"</span>;
+out &lt;&lt; <span class="str">"Second line.\n"</span>;
+out.<span class="fn">close</span>();</code></pre>
+
+        <h3>15.3 Reading from a File</h3>
+        <pre><code>ifstream in(<span class="str">"notes.txt"</span>);
+<span class="type">string</span> line;
+<span class="kw">while</span> (<span class="fn">getline</span>(in, line)) {
+    cout &lt;&lt; line &lt;&lt; <span class="str">"\n"</span>;
+}</code></pre>
+
+        <div class="callout warning">
+            <div class="callout-title">⚠️ Always check if a file opened</div>
+            <p>If the file doesn't exist or you don't have permission, the program silently fails. Check <code>if (!out)</code> before using the file.</p>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="impact">16. Where C++ Is Used in the Real World</h2>
+
+        <p>C++ isn't a toy language — it powers real software you use every day. Here's where:</p>
+
+        <table>
+            <tr><th>Area</th><th>Examples</th></tr>
+            <tr><td>Operating systems</td><td>Windows, parts of macOS, Linux kernel subsystems</td></tr>
+            <tr><td>Web browsers</td><td>Chrome, Firefox, Safari (rendering engines)</td></tr>
+            <tr><td>Video games</td><td>Unreal Engine, Unity's core, Fortnite, Call of Duty</td></tr>
+            <tr><td>AI &amp; Machine Learning</td><td>TensorFlow's core, OpenCV</td></tr>
+            <tr><td>Databases</td><td>MySQL, MongoDB</td></tr>
+            <tr><td>Photo/Video editing</td><td>Adobe Photoshop, Premiere Pro</td></tr>
+            <tr><td>Self-driving cars</td><td>Tesla's software stack</td></tr>
+            <tr><td>Messaging apps</td><td>WhatsApp, Telegram (backend)</td></tr>
+            <tr><td>Financial trading</td><td>High-frequency trading platforms</td></tr>
+            <tr><td>Office software</td><td>Microsoft Office, LibreOffice</td></tr>
+        </table>
+
+        <p><strong>Why C++ specifically?</strong> Three things:</p>
+        <ol>
+            <li><strong>Speed</strong> — it's nearly as fast as hand-written machine code.</li>
+            <li><strong>Memory control</strong> — you decide exactly when memory is used and freed.</li>
+            <li><strong>Hardware access</strong> — it lets code talk directly to the CPU and devices.</li>
+        </ol>
+
+        <!-- ============================================================ -->
+        <h2 id="errors">Common Errors and How to Fix Them</h2>
+
+        <table>
+            <tr><th>Error message</th><th>What it means</th><th>Fix</th></tr>
+            <tr><td><code>expected ';' before '}'</code></td><td>You forgot a semicolon on the previous line.</td><td>Look at the line above the error.</td></tr>
+            <tr><td><code>'cout' was not declared</code></td><td>You forgot <code>#include &lt;iostream&gt;</code>.</td><td>Add the include at the top.</td></tr>
+            <tr><td><code>'x' was not declared</code></td><td>Used a variable before declaring it (or a typo).</td><td>Declare it earlier, or fix the spelling.</td></tr>
+            <tr><td><code>undefined reference to 'foo'</code></td><td>Function is declared but has no body.</td><td>Write the function's implementation.</td></tr>
+            <tr><td><code>cannot convert string to int</code></td><td>You tried to put text in a number box.</td><td>Use <code>stoi</code> or <code>to_string</code>.</td></tr>
+            <tr><td><code>segmentation fault</code></td><td>Program accessed memory it shouldn't have.</td><td>Check array bounds; check for null pointers.</td></tr>
+            <tr><td><code>out_of_range</code></td><td>You called <code>.at()</code> with an invalid index.</td><td>Double-check your index.</td></tr>
+            <tr><td><code>terminate called after throwing</code></td><td>Exception was thrown but never caught.</td><td>Add a <code>try/catch</code>.</td></tr>
+        </table>
+
+        <div class="callout tip">
+            <div class="callout-title">💡 Debugging tips</div>
+            <ul>
+                <li><strong>Read the error bottom to top.</strong> The most useful info is often at the bottom.</li>
+                <li><strong>Look at the line <em>above</em>.</strong> Missing semicolons are reported on the next line.</li>
+                <li><strong>Comment out half the code.</strong> If the error goes away, you know it's in the other half.</li>
+                <li><strong>Use temporary <code>cout</code> statements</strong> to see values. It's crude but works.</li>
+            </ul>
+        </div>
+
+        <!-- ============================================================ -->
+        <h2 id="exercises">Practice Exercises</h2>
+
+        <h3>Start Here (Very Easy)</h3>
+        <ol>
+            <li>Print your name and your favorite number.</li>
+            <li>Ask for the user's name and greet them.</li>
+            <li>Ask for two numbers and print their sum.</li>
+            <li>Ask for a temperature in Celsius and convert it to Fahrenheit.</li>
+            <li>Ask for a score (0–100) and print "Pass" or "Fail" (60+ passes).</li>
+        </ol>
+
+        <h3>Next Level</h3>
+        <ol>
+            <li>Print all even numbers from 1 to 50.</li>
+            <li>Ask for a number and print its multiplication table (1×n through 10×n).</li>
+            <li>Print the first 10 numbers of the Fibonacci sequence.</li>
+            <li>Ask for a word and print it backwards.</li>
+            <li>Ask for a number and check if it's prime.</li>
+        </ol>
+
+        <h3>Challenge</h3>
+        <ol>
+            <li>Build a simple calculator with a <code>switch</code> menu.</li>
+            <li>Make a number guessing game: computer picks 1–100, user guesses, computer says "too high"/"too low".</li>
+            <li>Create a <code>Student</code> class with name, age, and grades; make a vector of students and print each one.</li>
+            <li>Read a text file and count how many words it contains.</li>
+        </ol>
+
+        <h3>Read the Output Before Running</h3>
+        <p>Write down what each program prints <em>before</em> you run it. Then run it and compare.</p>
+        <ol>
+            <li><pre><code><span class="type">int</span> x = <span class="num">5</span>;
+cout &lt;&lt; x++ &lt;&lt; <span class="str">" "</span> &lt;&lt; ++x &lt;&lt; <span class="str">" "</span> &lt;&lt; x;</code></pre></li>
+            <li><pre><code><span class="kw">for</span> (<span class="type">int</span> i = <span class="num">0</span>; i &lt; <span class="num">3</span>; ++i)
+    <span class="kw">for</span> (<span class="type">int</span> j = i; j &lt; <span class="num">3</span>; ++j)
+        cout &lt;&lt; i &lt;&lt; j &lt;&lt; <span class="str">" "</span>;</code></pre></li>
+            <li><pre><code><span class="type">int</span> a = <span class="num">7</span>, b = <span class="num">2</span>;
+cout &lt;&lt; a / b &lt;&lt; <span class="str">" "</span> &lt;&lt; a % b &lt;&lt; <span class="str">" "</span> &lt;&lt; <span class="type">double</span>(a) / b;</code></pre></li>
+        </ol>
+
+        <hr>
+        <p class="center">— End — Happy coding! 🎉</p>
+
+    </main>
+</div>
+
+<button type="button" class="pdf-fab" data-pdf>PDF</button>
+
+<script>
+(function () {
+    'use strict';
+    const mainContent = document.querySelector('.main-content');
+    const searchInput = document.getElementById('searchInput');
+    const searchStatus = document.getElementById('searchStatus');
+    const searchNav = document.getElementById('searchNav');
+    const prevBtn = document.getElementById('prevMatch');
+    const nextBtn = document.getElementById('nextMatch');
+    const clearBtn = document.getElementById('searchClear');
+    let hits = [], current = -1, timer = null;
+
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function isMobile() { return window.matchMedia('(max-width: 900px)').matches; }
+    function openSidebar() {
+        if (!isMobile()) return;
+        sidebar.classList.add('open');
+        sidebarBackdrop.classList.add('show');
+        document.body.classList.add('sidebar-open');
+        sidebarToggle.setAttribute('aria-expanded', 'true');
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        sidebarBackdrop.classList.remove('show');
+        document.body.classList.remove('sidebar-open');
+        sidebarToggle.setAttribute('aria-expanded', 'false');
+    }
+    sidebarToggle && sidebarToggle.addEventListener('click', function () {
+        sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+    });
+    sidebarBackdrop && sidebarBackdrop.addEventListener('click', closeSidebar);
+    sidebar.querySelectorAll('a[href^="#"]').forEach(function (a) {
+        a.addEventListener('click', function () { if (isMobile()) closeSidebar(); });
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('open')) closeSidebar();
+    });
+
+    function clearHighlights() {
+        hits.forEach(function (m) {
+            if (m.parentNode) {
+                m.parentNode.replaceChild(document.createTextNode(m.textContent), m);
+            }
+        });
+        mainContent.normalize();
+        hits = []; current = -1;
+    }
+    function updateStatus() {
+        const q = searchInput.value.trim();
+        if (!q) { searchStatus.textContent = ''; searchNav.hidden = true; return; }
+        if (!hits.length) { searchStatus.textContent = 'No matches'; searchStatus.classList.add('none'); searchNav.hidden = true; return; }
+        searchStatus.classList.remove('none');
+        searchStatus.textContent = (current + 1) + ' of ' + hits.length;
+        searchNav.hidden = false;
+    }
+    function setCurrent(i) {
+        if (!hits.length) return;
+        if (current >= 0 && hits[current]) hits[current].classList.remove('current');
+        current = ((i % hits.length) + hits.length) % hits.length;
+        hits[current].classList.add('current');
+        hits[current].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        updateStatus();
+    }
+    function runSearch(q) {
+        clearHighlights();
+        if (q.length < 2) { updateStatus(); return; }
+        const walker = document.createTreeWalker(mainContent, NodeFilter.SHOW_TEXT, {
+            acceptNode: function (n) {
+                const tag = n.parentNode ? n.parentNode.nodeName : '';
+                if (tag === 'SCRIPT' || tag === 'STYLE') return NodeFilter.FILTER_REJECT;
+                return n.nodeValue && n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+            }
+        });
+        const nodes = []; let n;
+        while ((n = walker.nextNode())) nodes.push(n);
+        nodes.forEach(function (tn) {
+            const text = tn.nodeValue;
+            const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            let m, last = 0, frag = null;
+            while ((m = re.exec(text)) !== null) {
+                if (!frag) frag = document.createDocumentFragment();
+                if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+                const mark = document.createElement('mark');
+                mark.className = 'search-hit';
+                mark.textContent = m[0];
+                frag.appendChild(mark);
+                hits.push(mark);
+                last = m.index + m[0].length;
+                if (m[0].length === 0) re.lastIndex++;
+            }
+            if (!frag) return;
+            if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+            tn.parentNode.replaceChild(frag, tn);
+        });
+        if (hits.length) setCurrent(0); else updateStatus();
+    }
+    searchInput.addEventListener('input', function () {
+        clearBtn.hidden = !searchInput.value;
+        clearTimeout(timer);
+        timer = setTimeout(function () { runSearch(searchInput.value.trim()); }, 180);
+    });
+    searchInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (hits.length) setCurrent(current + (e.shiftKey ? -1 : 1));
+        } else if (e.key === 'Escape') {
+            searchInput.value = ''; clearBtn.hidden = true;
+            clearHighlights(); updateStatus();
+        }
+    });
+    prevBtn.addEventListener('click', function () { setCurrent(current - 1); });
+    nextBtn.addEventListener('click', function () { setCurrent(current + 1); });
+    clearBtn.addEventListener('click', function () {
+        searchInput.value = ''; clearBtn.hidden = true;
+        clearHighlights(); updateStatus(); searchInput.focus();
+    });
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+            e.preventDefault();
+            if (isMobile() && !sidebar.classList.contains('open')) openSidebar();
+            searchInput.focus(); searchInput.select();
+        }
+    });
+
+    let prevTitle = null;
+    document.querySelectorAll('[data-pdf]').forEach(function (b) {
+        b.addEventListener('click', function () {
+            prevTitle = document.title;
+            document.title = 'C++ Super Simple Beginner Guide';
+            window.print();
+        });
+    });
+    window.addEventListener('afterprint', function () {
+        if (prevTitle !== null) { document.title = prevTitle; prevTitle = null; }
+    });
+})();
+</script>
+
+</body>
+</html>
